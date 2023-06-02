@@ -52,6 +52,12 @@ body {
 }
 
 @layer components {
+  .btn-outline {
+    @apply text-sm border border-stone-500 text-stone-500 rounded-lg py-3 w-full hover:bg-stone-200 shadow-sm;
+  }
+  .btn {
+    @apply text-sm bg-stone-500 text-white rounded-lg py-3 w-full hover:brightness-75 shadow-sm;
+  }
   .center-x {
     @apply left-1/2 -translate-x-1/2;
   }

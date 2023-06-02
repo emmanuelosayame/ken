@@ -1,5 +1,3 @@
-"use client";
-
 import "./globals.css";
 import font from "next/font/local";
 
@@ -13,10 +11,10 @@ const poppins = font({
   variable: "--font-space-grotesk",
 });
 
-// export const metadata = {
-//   title: "Ken's | Food",
-//   description: "Shawarma and Babeque",
-// };
+export const metadata = {
+  title: "Ken's | Food",
+  description: "Shawarma and Babeque",
+};
 
 export default function RootLayout({
   children,

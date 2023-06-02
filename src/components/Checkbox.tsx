@@ -12,7 +12,7 @@ const Checkbox = ({
       <button
         type='button'
         onClick={handleChange}
-        className={`rounded-lg  cursor-pointer group hover:bg-neutral-400 
+        className={`rounded-lg  cursor-pointer group hover:brightness-75 
         flex w-6 md:w-7 h-6 md:h-7 items-center justify-center shadow-md text-red-600 ${
           checked ? "bg-red-300" : "bg-neutral-300"
         }`}>

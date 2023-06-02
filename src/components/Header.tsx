@@ -1,10 +1,8 @@
 "use client";
 
-import { useState } from "react";
+import { Dispatch, SetStateAction, useState } from "react";
 import {
   Bars3Icon,
-  CheckCircleIcon,
-  CheckIcon,
   MinusIcon,
   PlusIcon,
   ShoppingCartIcon,
@@ -14,17 +12,27 @@ import {
 } from "@heroicons/react/20/solid";
 import { RemoveScroll } from "react-remove-scroll";
 import { useRouter } from "next/navigation";
-import { Root, Content, Trigger, Overlay } from "@radix-ui/react-dialog";
+import {
+  Root,
+  Content,
+  Trigger,
+  Overlay,
+  Portal,
+} from "@radix-ui/react-dialog";
 import Checkbox from "./Checkbox";
+import { useStore } from "../../store/store";
 
 const Header = () => {
   const router = useRouter();
+
+  const [open, setOpen] = useState(false);
+
   return (
     <div
       className={`fixed flex flex-col z-20 inset-x-0 top-0 w-full max-w-5xl  font-mono text-sm bg-gradient-to-b
-     from-zinc-400 border-b border-gray-300`}>
+     from-zinc-400 border-b border-gray-300 ${open ? "" : "backdrop-blur-lg"}`}>
       <div className='flex px-5 py-4 w-full items-start justify-between'>
-        <MobileMenu />
+        <MobileMenu open={open} setOpen={setOpen} />
         <Logo />
         <div className='flex gap-2 items-center'>
           <Root>
@@ -34,7 +42,7 @@ const Header = () => {
               <ShoppingCartIcon width={25} />
             </Trigger>
           </Root>
-          <button onClick={() => router.push("/cart")}>
+          <button onClick={() => router.push("/account")}>
             <UserCircleIcon width={27} />
           </button>
         </div>
@@ -53,77 +61,91 @@ const Header = () => {
 const Cart = () => {
   const router = useRouter();
 
-  // console.log(open);
+  const noSSRCart = useStore((state) => state.cart);
+  const modifyQ = useStore((state) => state.modifyQ);
+  const remove = useStore((state) => state.removeItem);
+  const removeAll = useStore((state) => state.removeAll);
 
   const cart = [
-    { title: "Big Shawarma", price: 1500, quantity: 4 },
-    { title: "Small Shawarma", price: 800, quantity: 4 },
+    { id: "1", title: "Big Shawarma", price: 1500, quantity: 4 },
+    { id: "2", title: "Small Shawarma", price: 800, quantity: 4 },
   ];
 
   return (
-    <Content className='overflow-hidden w-full  p-4 fixed center-x top-28'>
-      <div className='bg-white backdrop-blur-lg rounded-xl p-4 shadow-md'>
-        <div className='flex gap-5'>
-          <h2 className='text-lg font-semibold'>Cart</h2>
-          <button className='text-red-400'>select all</button>
-          <button>
-            <TrashIcon width={23} />
+    <Portal>
+      <Content className='overflow-hidden w-full  p-4 fixed center-x top-28'>
+        <div className='bg-white backdrop-blur-lg rounded-xl p-4 shadow-md'>
+          <div className='flex gap-5'>
+            <h2 className='text-lg font-semibold'>Cart</h2>
+            <button className='text-red-400'>select all</button>
+            <button>
+              <TrashIcon width={23} />
+            </button>
+          </div>
+          <div className='border-b border-b-gray-300 w-full my-1' />
+          <div className='flex flex-col gap-3 pt-2'>
+            {cart.map((item, index) => (
+              <div key={index} className='flex gap-3 items-center'>
+                <Checkbox checked handleChange={() => {}} />
+                <div>
+                  <div className='w-14 h-14 bg-black rounded-md' />
+                </div>
+                <div className='flex flex-col gap-1 flex-1'>
+                  <h2>{item.title}</h2>
+                  {/* <span>|</span> */}
+                  <p>₦ {item.price}</p>
+                </div>
+
+                <div className='flex items-center justify-between '>
+                  <button
+                    className='bg-neutral-700 flex items-center justify-center
+                   rounded-lg h-5 md:h-7 w-5 md:w-7 text-white shadow-md disabled:opacity-70'
+                    aria-label='decreament-item'
+                    disabled={item.quantity < 2}
+                    onClick={() => modifyQ(item.id, item.quantity - 1)}>
+                    <MinusIcon width={18} stroke='white' />
+                  </button>
+                  <input
+                    className='w-6 text-center text-[17px]'
+                    value={item.quantity}
+                    onChange={(e) => modifyQ(item.id, Number(e.target.value))}
+                    type='number'
+                  />
+                  <button
+                    className='bg-red-300 flex items-center justify-center
+                   rounded-lg h-6 md:h-7 w-6 text-red-600 shadow-md disabled:opacity-70'
+                    aria-label='decreament-item'
+                    disabled={item.quantity > 10}
+                    onClick={() => modifyQ(item.id, item.quantity + 1)}>
+                    <PlusIcon width={18} />
+                  </button>
+                </div>
+                <button>
+                  <TrashIcon width={20} />
+                </button>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        <div className='bg-white rounded-xl p-4 mt-4 space-y-3 shadow-md'>
+          <h3 className='text-lg'>Total: {2300}</h3>
+          <button className='bg-black rounded-lg py-3 w-full text-white'>
+            Checkout
           </button>
         </div>
-        <div className='border-b border-b-gray-300 w-full my-1' />
-        <div className='flex flex-col gap-3 pt-2'>
-          {cart.map((item, index) => (
-            <div key={index} className='flex gap-3 items-center'>
-              <Checkbox checked handleChange={() => {}} />
-              <div>
-                <div className='w-14 h-14 bg-black rounded-md' />
-              </div>
-              <div className='flex flex-col gap-1 flex-1'>
-                <h2>{item.title}</h2>
-                {/* <span>|</span> */}
-                <p>₦ {item.price}</p>
-              </div>
-
-              <div className='flex items-center justify-between '>
-                <button
-                  className='bg-neutral-700 flex items-center justify-center
-                   rounded-lg h-5 md:h-7 w-5 md:w-7 text-white shadow-md disabled:opacity-70'
-                  aria-label='decreament-item'
-                  // disabled={item.quantity < 2}
-                >
-                  <MinusIcon width={18} stroke='white' />
-                </button>
-                <p className='w-6 text-center text-[17px]'>{item.quantity}</p>
-                <button
-                  className='bg-red-300 flex items-center justify-center
-                   rounded-lg h-6 md:h-7 w-6 text-red-600 shadow-md disabled:opacity-70'
-                  aria-label='decreament-item'
-                  // disabled={item.quantity > 19}
-                >
-                  <PlusIcon width={18} />
-                </button>
-              </div>
-              <button>
-                <TrashIcon width={20} />
-              </button>
-            </div>
-          ))}
-        </div>
-      </div>
-
-      <div className='bg-white rounded-xl p-4 mt-4 space-y-3 shadow-md'>
-        <h3 className='text-lg'>Total: {2300}</h3>
-        <button className='bg-black rounded-lg py-3 w-full text-white'>
-          Checkout
-        </button>
-      </div>
-    </Content>
+      </Content>
+    </Portal>
   );
 };
 
-const MobileMenu = () => {
-  const [open, setOpen] = useState(false);
-
+const MobileMenu = ({
+  open,
+  setOpen,
+}: {
+  open: boolean;
+  setOpen: Dispatch<SetStateAction<boolean>>;
+}) => {
   const router = useRouter();
 
   return (
@@ -140,26 +162,51 @@ const MobileMenu = () => {
 
           <div className='flex flex-col mt-10'>
             <button
-              onClick={() => router.push("cart")}
+              onClick={() => {
+                router.push("menu");
+                setOpen(false);
+              }}
               className='text-lg py-1.5 w-full hover:bg-stone-100'>
-              Deals
+              Menu
             </button>
             <button
-              onClick={() => router.push("my-orders")}
+              onClick={() => {
+                router.push("my-orders");
+                setOpen(false);
+              }}
               className='text-lg py-1.5 w-full hover:bg-stone-100'>
               My Orders
             </button>
             <button
-              onClick={() => router.push("my-orders")}
+              onClick={() => {
+                router.push("my-orders");
+                setOpen(false);
+              }}
               className='text-lg py-1.5 w-full hover:bg-stone-100'>
               FAQs
             </button>
 
+            <button
+              onClick={() => router.push("my-orders")}
+              className='text-lg py-1.5 w-full hover:bg-stone-100'>
+              Support / Contact
+            </button>
+
             <div className='flex gap-4 mt-10'>
-              <button className='text-sm border border-stone-500 text-stone-500 rounded-lg py-3 w-full'>
+              <button
+                className='btn-outline'
+                onClick={() => {
+                  router.push("/login/new-user");
+                  setOpen(false);
+                }}>
                 Signup
               </button>
-              <button className='text-sm bg-stone-500 text-white rounded-lg py-3 w-full'>
+              <button
+                className='btn'
+                onClick={() => {
+                  router.push("/login");
+                  setOpen(false);
+                }}>
                 Login
               </button>
             </div>
