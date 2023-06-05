@@ -1,8 +1,10 @@
 import { router } from "../trpc";
+import { orderRouter } from "./order";
 import { itemRouter } from "./item";
 
 export const appRouter = router({
   item: itemRouter,
+  order: orderRouter,
   //   store: storeRouter,
   //   vendor: vendorRouter,
   //   order: orderRouter,

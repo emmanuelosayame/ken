@@ -1,0 +1,27 @@
+{
+  "version": "5",
+  "dialect": "pg",
+  "entries": [
+    {
+      "idx": 0,
+      "version": "5",
+      "when": 1685977658369,
+      "tag": "0000_lovely_viper",
+      "breakpoints": false
+    },
+    {
+      "idx": 1,
+      "version": "5",
+      "when": 1685980453495,
+      "tag": "0001_curvy_william_stryker",
+      "breakpoints": false
+    },
+    {
+      "idx": 2,
+      "version": "5",
+      "when": 1685990768432,
+      "tag": "0002_dizzy_barracuda",
+      "breakpoints": false
+    }
+  ]
+}

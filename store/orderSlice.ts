@@ -1,7 +1,7 @@
 import type { CartSlice, OrderSlice, OrderT } from "../t";
 import type { StateCreator } from "zustand";
 
-const initialState: OrderT = {
+export const initialState: OrderT = {
   items: [],
   orderDetails: {
     email: "",
@@ -14,20 +14,21 @@ const initialState: OrderT = {
 
 export const orderSlice: StateCreator<
   OrderSlice & CartSlice,
-  [["zustand/devtools", never], ["zustand/persist", unknown]],
+  [
+    ["zustand/immer", never],
+    ["zustand/devtools", never],
+    ["zustand/persist", unknown]
+  ],
   [],
   OrderSlice
 > = (set) => ({
   order: initialState,
   addOrderItems: (items) =>
-    set((state) => ({
-      order: {
-        ...state.order,
-        items,
-      },
-    })),
-  setOrderDetails: (shippingType) =>
-    set((state) => ({ order: { ...state.order, shippingType } })),
+    set((state) => {
+      state.order.items = items;
+    }),
+  setOrderDetails: (details) =>
+    set((state) => ({ order: { ...state.order, orderDetails: details } })),
   resetOrder: () =>
     set((state) => ({
       order: {

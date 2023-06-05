@@ -36,9 +36,9 @@ export const cartSlice: StateCreator<
     set((state) => ({
       cart: state.cart.filter((item) => itemId !== item.id),
     })),
-  removeAll: () =>
-    set(() => ({
-      cart: [],
+  removeItems: (items) =>
+    set((state) => ({
+      cart: state.cart.filter((x) => !items.includes(x.id)),
     })),
   // removeAll: () => set(() => ({ cart: [] })),
   // incrementCartQ: (itemId) =>

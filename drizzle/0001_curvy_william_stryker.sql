@@ -1,0 +1,2 @@
+ALTER TABLE "carts" ALTER COLUMN "quantity" SET NOT NULL;
+ALTER TABLE "carts" ALTER COLUMN "uid" SET DATA TYPE varchar;

@@ -4,7 +4,7 @@ import Header from "./Header";
 
 const Layout = ({ children }: { children: ReactNode }) => {
   return (
-    <main className='flex min-h-screen flex-col items-center justify-between py-16 w-full'>
+    <main className='flex min-h-screen flex-col items-center justify-between pb-16 pt-24 w-full'>
       <Header />
       {children}
       <Footer />

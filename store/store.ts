@@ -21,12 +21,12 @@ export const useStore = create<OrderSlice & CartSlice>()(
           ...orderSlice(...args),
         }),
         {
-          name: "delorand",
-          partialize: (state) => ({ order: state.order }),
+          name: "ken",
+          partialize: (state) => ({ order: state.order, cart: state.cart }),
           // getStorage: () => storage as StateStorage,
         }
       ),
-      { name: "delorand" }
+      { name: "ken" }
     )
   )
 );

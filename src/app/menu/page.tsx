@@ -1,11 +1,22 @@
 import ItemComponent from "@/components/Item";
-import prisma from "@/server/prisma";
-import { items } from "@lib/data";
-import { Item } from "@prisma/client";
-import { useRouter } from "next/navigation";
+import { itemS } from "@/server/db/schema";
+import { db } from "@/server/drizzle";
+
+const getData = async () => {
+  try {
+    const items = await db.select().from(itemS);
+    if (items.length > 0) {
+      return items;
+    }
+    throw new Error("no item");
+  } catch (err) {
+    const error = err as any;
+    throw new Error(error);
+  }
+};
 
 const MenuPage = async () => {
-  // const items = await prisma.item.findMany({});
+  const items = await getData();
 
   return (
     <>
@@ -15,7 +26,7 @@ const MenuPage = async () => {
         ))}
       </div>
 
-      <div className='pt-10 w-11/12'>
+      {/* <div className='pt-10 w-11/12'>
         <h1 className='font-medium my-2 text-xl'>Drinks</h1>
         <div className='grid grid-cols-2 gap-4 full '>
           <Drink />
@@ -23,7 +34,7 @@ const MenuPage = async () => {
           <Drink />
           <Drink />
         </div>
-      </div>
+      </div> */}
     </>
   );
 };

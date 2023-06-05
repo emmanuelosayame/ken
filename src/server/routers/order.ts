@@ -1,7 +1,10 @@
 import { z } from "zod";
 import { procedure, router } from "../trpc";
+import { items as data } from "@lib/data";
+import { db } from "../drizzle";
 import { customerS, itemS } from "../db/schema";
 import { eq, inArray } from "drizzle-orm";
+import { sum } from "lodash";
 
 const CustomerS = z.object({
   fullName: z.string(),
@@ -17,15 +20,8 @@ const ItemS = z.object({
   price: z.number(),
 });
 
-export const itemRouter = router({
-  test: procedure.input(z.array(ItemS)).mutation(async ({ ctx, input }) => {
-    // const {} = input;
-    return await ctx.db.insert(itemS).values(input).returning();
-  }),
-  many: procedure.input(z.object({})).query(async ({ ctx }) => {
-    return await ctx.db.select().from(itemS);
-  }),
-  metadata: procedure
+export const orderRouter = router({
+  checkout: procedure
     .input(
       z.object({
         items: z.array(
@@ -35,7 +31,7 @@ export const itemRouter = router({
     )
     .query(async ({ ctx, input }) => {
       const { items } = input;
-      const matched = await ctx.db
+      const matched = await db
         .select()
         .from(itemS)
         .where(
@@ -48,6 +44,7 @@ export const itemRouter = router({
         ...x,
         quantity: items.find((y) => y.id === x.id)?.quantity || 1,
       }));
-      return mixed;
+      const total = sum(mixed.map((x) => x.price * x.quantity));
+      return { items: mixed, total };
     }),
 });

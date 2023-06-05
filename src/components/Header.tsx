@@ -3,47 +3,66 @@
 import { Dispatch, SetStateAction, useState } from "react";
 import {
   Bars3Icon,
-  MinusIcon,
-  PlusIcon,
   ShoppingCartIcon,
-  TrashIcon,
   UserCircleIcon,
   XMarkIcon,
 } from "@heroicons/react/20/solid";
 import { RemoveScroll } from "react-remove-scroll";
 import { useRouter } from "next/navigation";
-import {
-  Root,
-  Content,
-  Trigger,
-  Overlay,
-  Portal,
-} from "@radix-ui/react-dialog";
-import Checkbox from "./Checkbox";
+import { Root, Trigger } from "@radix-ui/react-dialog";
 import { useStore } from "../../store/store";
+import { useSSR } from "@lib/helpers";
+import dynamic from "next/dynamic";
+import useMutate from "swr/mutation";
+import { client } from "@/server/client";
+import { LoadingBlur } from "./Loading";
+import { supabase } from "@/server/supabase";
+import { useUser } from "@lib/hooks";
+
+const CartComponent = dynamic(() => import("./CartComponent"));
 
 const Header = () => {
   const router = useRouter();
 
   const [open, setOpen] = useState(false);
+  const [openC, setOpenC] = useState(false);
+
+  const noSSRCart = useStore((state) => state.cart);
+  const cart = useSSR() ? noSSRCart : [];
+
+  const session = useUser();
+  const user = session?.user;
 
   return (
     <div
       className={`fixed flex flex-col z-20 inset-x-0 top-0 w-full max-w-5xl  font-mono text-sm bg-gradient-to-b
-     from-zinc-400 border-b border-gray-300 ${open ? "" : "backdrop-blur-lg"}`}>
+     from-zinc-400 border-b border-gray-400 ${open ? "" : "backdrop-blur-lg"}`}>
       <div className='flex px-5 py-4 w-full items-start justify-between'>
+        {/* {isMutating && <LoadingBlur />} */}
+        {/* <button
+          className='bg-blue-400 p-2 rounded-lg'
+          onClick={() => trigger()}>
+          Click
+        </button> */}
         <MobileMenu open={open} setOpen={setOpen} />
         <Logo />
         <div className='flex gap-2 items-center'>
-          <Root>
-            <Overlay className='fixed inset-0 bg-black/30 backdrop-blur-sm' />
-            <Cart />
-            <Trigger className=''>
+          <Root open={openC} onOpenChange={setOpenC}>
+            <CartComponent rawCart={cart} setOpen={setOpenC} />
+            <Trigger className='relative'>
               <ShoppingCartIcon width={25} />
+              <span
+                className='absolute top-0 -right-1 text-[13px] font-semibold bg-red-500 flex justify-center items-center
+               text-white rounded-full h-[14px] w-[14px]'>
+                {cart.length}
+              </span>
             </Trigger>
           </Root>
-          <button onClick={() => router.push("/account")}>
-            <UserCircleIcon width={27} />
+          <button
+            onClick={() =>
+              !session ? router.push("/login") : router.push("/account")
+            }>
+            <UserCircleIcon width={30} />
           </button>
         </div>
       </div>
@@ -57,87 +76,6 @@ const Header = () => {
   <code className='font-mono font-bold'>src/app/page.tsx</code>
 </p>; */
 }
-
-const Cart = () => {
-  const router = useRouter();
-
-  const noSSRCart = useStore((state) => state.cart);
-  const modifyQ = useStore((state) => state.modifyQ);
-  const remove = useStore((state) => state.removeItem);
-  const removeAll = useStore((state) => state.removeAll);
-
-  const cart = [
-    { id: "1", title: "Big Shawarma", price: 1500, quantity: 4 },
-    { id: "2", title: "Small Shawarma", price: 800, quantity: 4 },
-  ];
-
-  return (
-    <Portal>
-      <Content className='overflow-hidden w-full  p-4 fixed center-x top-28'>
-        <div className='bg-white backdrop-blur-lg rounded-xl p-4 shadow-md'>
-          <div className='flex gap-5'>
-            <h2 className='text-lg font-semibold'>Cart</h2>
-            <button className='text-red-400'>select all</button>
-            <button>
-              <TrashIcon width={23} />
-            </button>
-          </div>
-          <div className='border-b border-b-gray-300 w-full my-1' />
-          <div className='flex flex-col gap-3 pt-2'>
-            {cart.map((item, index) => (
-              <div key={index} className='flex gap-3 items-center'>
-                <Checkbox checked handleChange={() => {}} />
-                <div>
-                  <div className='w-14 h-14 bg-black rounded-md' />
-                </div>
-                <div className='flex flex-col gap-1 flex-1'>
-                  <h2>{item.title}</h2>
-                  {/* <span>|</span> */}
-                  <p>₦ {item.price}</p>
-                </div>
-
-                <div className='flex items-center justify-between '>
-                  <button
-                    className='bg-neutral-700 flex items-center justify-center
-                   rounded-lg h-5 md:h-7 w-5 md:w-7 text-white shadow-md disabled:opacity-70'
-                    aria-label='decreament-item'
-                    disabled={item.quantity < 2}
-                    onClick={() => modifyQ(item.id, item.quantity - 1)}>
-                    <MinusIcon width={18} stroke='white' />
-                  </button>
-                  <input
-                    className='w-6 text-center text-[17px]'
-                    value={item.quantity}
-                    onChange={(e) => modifyQ(item.id, Number(e.target.value))}
-                    type='number'
-                  />
-                  <button
-                    className='bg-red-300 flex items-center justify-center
-                   rounded-lg h-6 md:h-7 w-6 text-red-600 shadow-md disabled:opacity-70'
-                    aria-label='decreament-item'
-                    disabled={item.quantity > 10}
-                    onClick={() => modifyQ(item.id, item.quantity + 1)}>
-                    <PlusIcon width={18} />
-                  </button>
-                </div>
-                <button>
-                  <TrashIcon width={20} />
-                </button>
-              </div>
-            ))}
-          </div>
-        </div>
-
-        <div className='bg-white rounded-xl p-4 mt-4 space-y-3 shadow-md'>
-          <h3 className='text-lg'>Total: {2300}</h3>
-          <button className='bg-black rounded-lg py-3 w-full text-white'>
-            Checkout
-          </button>
-        </div>
-      </Content>
-    </Portal>
-  );
-};
 
 const MobileMenu = ({
   open,
@@ -163,6 +101,14 @@ const MobileMenu = ({
           <div className='flex flex-col mt-10'>
             <button
               onClick={() => {
+                router.push("/");
+                setOpen(false);
+              }}
+              className='text-lg py-1.5 w-full hover:bg-stone-100'>
+              Home
+            </button>
+            <button
+              onClick={() => {
                 router.push("menu");
                 setOpen(false);
               }}
@@ -179,7 +125,7 @@ const MobileMenu = ({
             </button>
             <button
               onClick={() => {
-                router.push("my-orders");
+                router.push("/faq");
                 setOpen(false);
               }}
               className='text-lg py-1.5 w-full hover:bg-stone-100'>

@@ -1,0 +1,36 @@
+const { trigger, isMutating } = useMutate(
+    "test",
+    async () =>
+      await client.item.test.mutate([
+        {
+          title: "Beef Sharwama",
+          description: "Hot and spicy beef sharwama from ken",
+          price: 1300,
+        },
+        {
+          title: "Beef and Hotdog",
+          description: "Hot and spicy Beef and Hotdog from ken",
+          price: 1500,
+        },
+        {
+          title: "Special Sharwama",
+          description: "Hot and spicy Special Sharwama from ken",
+          price: 2000,
+        },
+        {
+          title: "Jumbo Sharwama",
+          description: "Hot and spicy Jumbo Sharwama from ken",
+          price: 3000,
+        },
+        {
+          title: "Chiken Sharwama",
+          description: "Hot and spicy chicken Sharwama from ken",
+          price: 1500,
+        },
+        {
+          title: "Chiken and Hotdogs",
+          description: "Hot and spicy chicken and Hotdogs from ken",
+          price: 1700,
+        },
+      ])
+  );

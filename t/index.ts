@@ -1,7 +1,7 @@
-import { Cart } from "@prisma/client";
+import { Cart } from "@/server/db/schema";
 
 export interface OrderT {
-  items: { id: string; quantity: number }[];
+  items: { id: number; quantity: number }[];
   orderDetails: {
     email: string;
     name: string;
@@ -13,15 +13,15 @@ export interface OrderT {
 
 export interface OrderSlice {
   order: OrderT;
-  addOrderItems: (items: OrderT["items"]) => void;
+  addOrderItems: (items: Cart[]) => void;
   setOrderDetails: (details: OrderT["orderDetails"]) => void;
 }
 
 export interface CartSlice {
-  cart: Cart["items"];
-  addToCart: (cart: Cart["items"]["0"]) => void;
-  modifyQ: (id: string, quantity: number) => void;
-  removeItem: (id: string) => void;
-  // removeItems: (itemsId: string[]) => void;
-  removeAll: (id: string) => void;
+  cart: Cart[];
+  addToCart: (cart: Cart) => void;
+  modifyQ: (id: number, quantity: number) => void;
+  removeItem: (id: string | number) => void;
+  removeItems: (itemsId: (string | number)[]) => void;
+  // removeAll: () => void;
 }

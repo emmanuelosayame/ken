@@ -1,3 +1,4 @@
+import { SWRConfig } from "swr";
 import "./globals.css";
 import font from "next/font/local";
 
@@ -24,7 +25,7 @@ export default function RootLayout({
   return (
     <html lang='en'>
       <body className={`${poppins.variable} font-space-grotesk`}>
-        {children}
+        <>{children}</>
       </body>
     </html>
   );

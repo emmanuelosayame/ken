@@ -1,16 +1,19 @@
 "use client";
-import { Item } from "@prisma/client";
 import { useRouter } from "next/navigation";
 import { useStore } from "../../store/store";
+import { Item } from "@/server/db/schema";
 
-const ItemComponent = ({ data }: { data?: Item }) => {
+const ItemComponent = ({ data }: { data: Item }) => {
   const router = useRouter();
 
   const user = null;
 
   const addToCart = useStore((state) => state.addToCart);
 
+  const addOrderItem = useStore((state) => state.addOrderItems);
+
   const orderNow = () => {
+    addOrderItem([{ id: data.id, quantity: 1 }]);
     router.push("/checkout");
   };
 
@@ -23,13 +26,15 @@ const ItemComponent = ({ data }: { data?: Item }) => {
           <h3 className='text-xl text-stone-600 font-semibold'>
             {data?.title}
           </h3>
-          <p className='text-[15px] text-center'>{data?.decsription}</p>
+          <p className='text-[15px] text-center'>{data?.description}</p>
         </div>
       </div>
-      <div
-        className='flex gap-2 w-full'
-        onClick={() => addToCart({ id: data?.id || "", quantity: 1 })}>
-        <button className='btn-outline'>Add to Cart</button>
+      <div className='flex gap-2 w-full'>
+        <button
+          className='btn-outline'
+          onClick={() => addToCart({ id: data.id, quantity: 1 })}>
+          Add to Cart
+        </button>
         <button className='btn' onClick={orderNow}>
           Order Now
         </button>

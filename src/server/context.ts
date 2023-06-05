@@ -1,19 +1,21 @@
 import { type inferAsyncReturnType } from "@trpc/server";
 import type * as trpcNext from "@trpc/server/adapters/next";
-import prisma from "../server/prisma";
+import { db } from "./drizzle";
 
 // interface Session {
 //   auth: SignedInAuthObject | SignedOutAuthObject;
 // }
 
-export const createContext = async (
-  opts: trpcNext.CreateNextContextOptions
-) => {
-  const { req } = opts;
+export const createContext = async (opts: {
+  req: Request;
+  resHeaders: Headers;
+}) => {
+  const { req, resHeaders } = opts;
 
   return {
-    prisma,
+    db,
     req,
+    resHeaders,
     // session: {} as Session,
   };
 };

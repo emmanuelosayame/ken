@@ -3,7 +3,7 @@ import { TRPCError, initTRPC } from "@trpc/server";
 import { type Context } from "./context";
 // import { getAuth } from "@clerk/nextjs/server";
 
-const t = initTRPC.context().create();
+const t = initTRPC.context<Context>().create();
 
 const enforceUserIsAuthed = t.middleware(async ({ ctx, next }) => {
   //   const auth = getAuth(ctx.req);
