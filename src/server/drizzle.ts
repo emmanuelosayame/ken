@@ -5,10 +5,10 @@ import postgres from "postgres";
 // for query purposes
 const queryClient = postgres({
   host: process.env.DB_HOST || "",
-  port: 5432,
-  database: "ken", // Name of database to connect to
-  username: "postgres", // Username of database user
-  password: "5050",
+  port: Number(process.env.DB_PORT || "5432"),
+  database: process.env.DB_DATABASE || "ken", // Name of database to connect to
+  username: process.env.DB_USER || "postgres", // Username of database user
+  password: process.env.DB_PASSWORD || "",
 });
 const db = drizzle(queryClient);
 
