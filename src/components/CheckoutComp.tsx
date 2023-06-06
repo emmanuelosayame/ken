@@ -8,13 +8,16 @@ import { Customer } from "@/server/db/schema";
 import useSwr from "swr";
 import { client } from "@/server/client";
 import { useStore } from "../../store/store";
-import { useSSR } from "@lib/helpers";
+import { useSSR } from "@lib/hooks";
 import { OrderT } from "../../t";
 import { initialState } from "../../store/orderSlice";
 import useMutate from "swr/mutation";
 import { LoadingBlur } from "./Loading";
+import { useSession } from "@lib/hooks";
 
 const CheckoutComp = ({ customer }: { customer?: Customer }) => {
+  const session = useSession();
+
   const noSSROrder = useStore((state) => state.order);
   const { items: orderItems, orderDetails }: OrderT = useSSR()
     ? noSSROrder
@@ -27,8 +30,6 @@ const CheckoutComp = ({ customer }: { customer?: Customer }) => {
     notes: customer ? orderDetails.notes : "",
     createAccount: false,
   };
-
-  // console.log(orderItems);
 
   const {
     data: checkoutData,
@@ -52,8 +53,7 @@ const CheckoutComp = ({ customer }: { customer?: Customer }) => {
   //     })
   // );
 
-  // console.log(data);
-
+  // const {} = useMutate("place-order",async()=>client.order.)
   const placeOrder = () => {};
 
   return (
@@ -62,23 +62,25 @@ const CheckoutComp = ({ customer }: { customer?: Customer }) => {
       onSubmit={placeOrder}
       validationSchema={checkoutVS}
       enableReinitialize>
-      {({ getFieldProps, touched, errors, dirty, values, setFieldValue }) => (
+      {({ getFieldProps, touched, errors, isValid, values, setFieldValue }) => (
         <Form className='space-y-4'>
           {/* {isMutating && (
             <p className='absolute top-20 left-20 text-red-500 z-50'>loading</p>
           )} */}
           {/* <LoadingBlur /> */}
           <div className='bg-white w-full rounded-lg p-3 space-y-2'>
-            <div className='flex gap-3'>
-              <Checkbox
-                checked={values.createAccount}
-                handleChange={() => {
-                  setFieldValue("createAccount", !values.createAccount);
-                }}
-              />
+            {!session && (
+              <div className='flex gap-3'>
+                <Checkbox
+                  checked={values.createAccount}
+                  handleChange={() => {
+                    setFieldValue("createAccount", !values.createAccount);
+                  }}
+                />
 
-              <p>Also create an account for me</p>
-            </div>
+                <p>Also create a Profile for me</p>
+              </div>
+            )}
             <h2 className='font-semibold'>Billing Details</h2>
             {/* <button className='btn' onClick={() => trigger()}>
               Click
@@ -87,22 +89,30 @@ const CheckoutComp = ({ customer }: { customer?: Customer }) => {
               label='Name'
               placeholder='John'
               required
+              error={errors.name}
+              touched={touched.name}
               {...getFieldProps("name")}
             />
             <InputTemp
               label='Phone'
               required
+              error={errors.phone}
+              touched={touched.phone}
               placeholder='080...'
               {...getFieldProps("phone")}
             />
             <InputTemp
               label='Location'
               required
+              error={errors.location}
+              touched={touched.location}
               placeholder='e.g. Uniben'
               {...getFieldProps("location")}
             />
             <InputTextarea
               label='Notes (optional)'
+              error={errors.notes}
+              touched={touched.notes}
               {...getFieldProps("notes")}
               placeholder='additional notes...'
             />
@@ -131,7 +141,7 @@ const CheckoutComp = ({ customer }: { customer?: Customer }) => {
                 ₦ {checkoutData?.total}
               </span>
             </h3>
-            <button className='btn' type='submit'>
+            <button className='btn' type='submit' disabled={!isValid}>
               Pay
             </button>
           </div>

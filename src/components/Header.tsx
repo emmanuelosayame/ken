@@ -11,13 +11,15 @@ import { RemoveScroll } from "react-remove-scroll";
 import { useRouter } from "next/navigation";
 import { Root, Trigger } from "@radix-ui/react-dialog";
 import { useStore } from "../../store/store";
-import { useSSR } from "@lib/helpers";
+import { useSSR } from "@lib/hooks";
 import dynamic from "next/dynamic";
 import useMutate from "swr/mutation";
 import { client } from "@/server/client";
 import { LoadingBlur } from "./Loading";
 import { supabase } from "@/server/supabase";
-import { useUser } from "@lib/hooks";
+import { useSession } from "@lib/hooks";
+import { Session } from "@supabase/supabase-js";
+import Avatar from "./radix/Avatar";
 
 const CartComponent = dynamic(() => import("./CartComponent"));
 
@@ -30,23 +32,25 @@ const Header = () => {
   const noSSRCart = useStore((state) => state.cart);
   const cart = useSSR() ? noSSRCart : [];
 
-  const session = useUser();
+  const session = useSession();
   const user = session?.user;
 
   return (
     <div
-      className={`fixed flex flex-col z-20 inset-x-0 top-0 w-full max-w-5xl  font-mono text-sm bg-gradient-to-b
-     from-zinc-400 border-b border-gray-400 ${open ? "" : "backdrop-blur-lg"}`}>
-      <div className='flex px-5 py-4 w-full items-start justify-between'>
+      className={`fixed flex flex-col z-20 inset-x-0 top-0 w-full  font-mono text-sm bg-gradient-to-b
+     from-zinc-400 dark:from-zinc-800 border-b border-gray-400 dark:border-neutral-800 ${
+       open ? "" : "backdrop-blur-lg"
+     }`}>
+      <div className='flex px-4 py-3 w-full items-start justify-between'>
         {/* {isMutating && <LoadingBlur />} */}
         {/* <button
           className='bg-blue-400 p-2 rounded-lg'
           onClick={() => trigger()}>
           Click
         </button> */}
-        <MobileMenu open={open} setOpen={setOpen} />
+        <MobileMenu session={session} open={open} setOpen={setOpen} />
         <Logo />
-        <div className='flex gap-2 items-center'>
+        <div className='flex gap-4 items-center'>
           <Root open={openC} onOpenChange={setOpenC}>
             <CartComponent rawCart={cart} setOpen={setOpenC} />
             <Trigger className='relative'>
@@ -62,7 +66,7 @@ const Header = () => {
             onClick={() =>
               !session ? router.push("/login") : router.push("/account")
             }>
-            <UserCircleIcon width={30} />
+            <Avatar className='w-8 h-8 rounded-full' fallback={user?.email} />
           </button>
         </div>
       </div>
@@ -80,9 +84,11 @@ const Header = () => {
 const MobileMenu = ({
   open,
   setOpen,
+  session,
 }: {
   open: boolean;
   setOpen: Dispatch<SetStateAction<boolean>>;
+  session: Session | null;
 }) => {
   const router = useRouter();
 
@@ -93,7 +99,9 @@ const MobileMenu = ({
       </button>
 
       {open && (
-        <RemoveScroll className='fixed z-50 inset-0 p-4 w-full h-full bg-white/50 backdrop-blur-md'>
+        <RemoveScroll
+          className='fixed z-50 inset-0 p-4 w-full h-full bg-white/50
+         dark:bg-black/80 backdrop-blur-lg '>
           <button onClick={() => setOpen((s) => !s)}>
             <XMarkIcon width={28} stroke='black' />
           </button>
@@ -115,14 +123,26 @@ const MobileMenu = ({
               className='text-lg py-1.5 w-full hover:bg-stone-100'>
               Menu
             </button>
-            <button
-              onClick={() => {
-                router.push("my-orders");
-                setOpen(false);
-              }}
-              className='text-lg py-1.5 w-full hover:bg-stone-100'>
-              My Orders
-            </button>
+            {session && (
+              <>
+                <button
+                  onClick={() => {
+                    router.push("my-orders");
+                    setOpen(false);
+                  }}
+                  className='text-lg py-1.5 w-full hover:bg-stone-100'>
+                  My Orders
+                </button>
+                <button
+                  onClick={() => {
+                    router.push("my-orders");
+                    setOpen(false);
+                  }}
+                  className='text-lg py-1.5 w-full hover:bg-stone-100'>
+                  My Profile
+                </button>
+              </>
+            )}
             <button
               onClick={() => {
                 router.push("/faq");
@@ -138,24 +158,26 @@ const MobileMenu = ({
               Support / Contact
             </button>
 
-            <div className='flex gap-4 mt-10'>
-              <button
-                className='btn-outline'
-                onClick={() => {
-                  router.push("/login/new-user");
-                  setOpen(false);
-                }}>
-                Signup
-              </button>
-              <button
-                className='btn'
-                onClick={() => {
-                  router.push("/login");
-                  setOpen(false);
-                }}>
-                Login
-              </button>
-            </div>
+            {!session && (
+              <div className='flex gap-4 mt-10'>
+                <button
+                  className='btn-outline'
+                  onClick={() => {
+                    router.push("/create-profile");
+                    setOpen(false);
+                  }}>
+                  Create Profile
+                </button>
+                <button
+                  className='btn'
+                  onClick={() => {
+                    router.push("/login");
+                    setOpen(false);
+                  }}>
+                  Login
+                </button>
+              </div>
+            )}
           </div>
         </RemoveScroll>
       )}
@@ -166,7 +188,7 @@ const MobileMenu = ({
 const Logo = () => {
   return (
     <>
-      <h1 className='text-[22px] font-semibold'>{"Ken's"}</h1>
+      <h1 className='text-xl font-semibold ml-10'>{"Ken's"}</h1>
     </>
   );
 };

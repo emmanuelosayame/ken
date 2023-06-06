@@ -10,6 +10,7 @@ import { Cart } from "@/server/db/schema";
 import useSwr from "swr";
 import { client } from "@/server/client";
 import { LoadingBlur } from "./Loading";
+import { useSWRConfig } from "swr";
 
 const CartComponent = ({
   rawCart,
@@ -22,12 +23,16 @@ const CartComponent = ({
 
   const requestKey = rawCart.map(({ id }) => ({ id }));
 
+  const [retries, setRetries] = useState(0);
+
+  const retry = () => setRetries((x) => x + 1);
+
   const {
     data: metadata,
     isLoading,
     error,
   } = useSwr(
-    rawCart.length > 0 ? ["item.metadata", requestKey] : null,
+    rawCart.length > 0 ? ["item.metadata", requestKey, retries] : null,
     async () =>
       await client.item.metadata.query({
         items: requestKey,
@@ -77,107 +82,133 @@ const CartComponent = ({
 
   return (
     <Portal>
-      <Overlay className='fixed inset-0 z-40 bg-black/20 backdrop-blur-lg' />
-      <Content className='overflow-hidden w-full z-50 p-4 fixed center-x top-28'>
-        {isLoading && <LoadingBlur />}
-        <div className='bg-white rounded-xl p-4 shadow-md'>
-          <div className='flex gap-5'>
-            <h2 className='text-lg font-semibold'>Cart</h2>
-            <button
-              className='text-red-400'
-              onClick={() =>
-                setSelected((state) =>
-                  state.length > 0 ? [] : cart.map((x) => x.id)
-                )
-              }>
-              select all
-            </button>
-            <button
-              disabled={selected.length < 1}
-              className='disabled:opacity-40'
-              onClick={() => removeItems(selected)}>
-              <TrashIcon width={23} />
-            </button>
+      <Overlay className='fixed inset-0 z-40 bg-black/50 backdrop-blur-sm' />
+      <Content
+        className={`overflow-hidden w-full z-50 p-4 fixed center-x top-28 dark:text-black flex flex-col ${
+          !metadata && error ? "" : ""
+        }`}>
+        {isLoading ? (
+          <div className='h-52 w-full'>
+            <LoadingBlur overlay={false} />
           </div>
-          <div className='border-b border-b-gray-300 w-full my-1' />
-          <div className='flex flex-col gap-3 pt-2 min-h-[80px] max-h-[500px] overflow-auto'>
-            {cart.map((cartItem, index) => {
-              const checked = getChecked(cartItem.id);
-
-              return (
-                <div key={index} className='flex gap-3 items-center'>
-                  <Checkbox
-                    checked={checked}
-                    handleChange={() => {
-                      if (checked) {
+        ) : (
+          <>
+            {!metadata && error ? (
+              <div
+                className='bg-white rounded-xl z-50 flex flex-col
+        justify-center items-center px-5 h-52 text-center font-medium gap-2 text-neutral-700'>
+                An Error Ocurred, check your internet connection
+                <button
+                  onClick={retry}
+                  className='text-red-600  py-2 px-6 rounded-lg bg-red-200 drop-shadow-sm hover:brightness-75'>
+                  Retry
+                </button>
+              </div>
+            ) : (
+              <>
+                <div className='bg-white rounded-xl p-4 shadow-md'>
+                  <div className='flex gap-5'>
+                    <h2 className='text-lg font-semibold'>Cart</h2>
+                    <button
+                      className='text-red-400'
+                      onClick={() =>
                         setSelected((state) =>
-                          state.filter((id) => id !== cartItem.id)
-                        );
-                      } else {
-                        setSelected((state) => [
-                          ...state.filter((id) => id !== cartItem.id),
-                          cartItem.id,
-                        ]);
-                      }
-                    }}
-                  />
-                  <div>
-                    <div className='w-14 h-14 bg-black rounded-md' />
+                          state.length > 0 ? [] : cart.map((x) => x.id)
+                        )
+                      }>
+                      select all
+                    </button>
+                    <button
+                      disabled={selected.length < 1}
+                      className='disabled:opacity-40'
+                      onClick={() => removeItems(selected)}>
+                      <TrashIcon width={23} />
+                    </button>
                   </div>
-                  <div className='flex flex-col gap-1 flex-1'>
-                    <h2>{cartItem?.title}</h2>
-                    {/* <span>|</span> */}
-                    <p>₦ {cartItem?.price}</p>
-                  </div>
+                  <div className='border-b border-b-gray-300 w-full my-1' />
 
-                  <div className='flex items-center justify-between '>
-                    <button
-                      className='bg-neutral-700 flex items-center justify-center
+                  <div className='flex flex-col gap-3 pt-2 min-h-[80px] max-h-[500px] overflow-auto'>
+                    {cart.map((cartItem, index) => {
+                      const checked = getChecked(cartItem.id);
+
+                      return (
+                        <div key={index} className='flex gap-3 items-center'>
+                          <Checkbox
+                            checked={checked}
+                            handleChange={() => {
+                              if (checked) {
+                                setSelected((state) =>
+                                  state.filter((id) => id !== cartItem.id)
+                                );
+                              } else {
+                                setSelected((state) => [
+                                  ...state.filter((id) => id !== cartItem.id),
+                                  cartItem.id,
+                                ]);
+                              }
+                            }}
+                          />
+                          <div>
+                            <div className='w-14 h-14 bg-black rounded-md' />
+                          </div>
+                          <div className='flex flex-col gap-1 flex-1'>
+                            <h2>{cartItem?.title}</h2>
+                            {/* <span>|</span> */}
+                            <p>₦ {cartItem?.price}</p>
+                          </div>
+
+                          <div className='flex items-center justify-between '>
+                            <button
+                              className='bg-neutral-700 flex items-center justify-center
                    rounded-lg h-5 md:h-7 w-5 md:w-7 text-white shadow-md disabled:opacity-70'
-                      aria-label='decreament-item'
-                      disabled={cartItem.quantity < 2}
-                      onClick={() =>
-                        modifyQ(cartItem.id, cartItem.quantity - 1)
-                      }>
-                      <MinusIcon width={18} stroke='white' />
-                    </button>
-                    <input
-                      className='w-6 text-center text-[17px]'
-                      value={cartItem.quantity}
-                      onChange={(e) =>
-                        modifyQ(cartItem.id, Number(e.target.value))
-                      }
-                      type='number'
-                    />
-                    <button
-                      className='bg-red-300 flex items-center justify-center
+                              aria-label='decreament-item'
+                              disabled={cartItem.quantity < 2}
+                              onClick={() =>
+                                modifyQ(cartItem.id, cartItem.quantity - 1)
+                              }>
+                              <MinusIcon width={18} stroke='white' />
+                            </button>
+                            <input
+                              className='w-6 text-center text-[17px]'
+                              value={cartItem.quantity}
+                              onChange={(e) =>
+                                modifyQ(cartItem.id, Number(e.target.value))
+                              }
+                              type='number'
+                            />
+                            <button
+                              className='bg-red-300 flex items-center justify-center
                    rounded-lg h-6 md:h-7 w-6 text-red-600 shadow-md disabled:opacity-70'
-                      aria-label='decreament-item'
-                      disabled={cartItem.quantity > 10}
-                      onClick={() =>
-                        modifyQ(cartItem.id, cartItem.quantity + 1)
-                      }>
-                      <PlusIcon width={18} />
-                    </button>
+                              aria-label='decreament-item'
+                              disabled={cartItem.quantity > 10}
+                              onClick={() =>
+                                modifyQ(cartItem.id, cartItem.quantity + 1)
+                              }>
+                              <PlusIcon width={18} />
+                            </button>
+                          </div>
+                          <button onClick={() => remove(cartItem.id)}>
+                            <TrashIcon width={20} />
+                          </button>
+                        </div>
+                      );
+                    })}
                   </div>
-                  <button onClick={() => remove(cartItem.id)}>
-                    <TrashIcon width={20} />
+                </div>
+
+                <div className='bg-white rounded-xl p-4 mt-4 space-y-3 shadow-md'>
+                  <h3 className='text-lg'>Total: {total}</h3>
+                  <button
+                    disabled={selected.length < 1}
+                    className='bg-black rounded-lg py-3 w-full text-white disabled:opacity-20'
+                    onClick={checkout}>
+                    Checkout
                   </button>
                 </div>
-              );
-            })}
-          </div>
-        </div>
-
-        <div className='bg-white rounded-xl p-4 mt-4 space-y-3 shadow-md'>
-          <h3 className='text-lg'>Total: {total}</h3>
-          <button
-            disabled={selected.length < 1}
-            className='bg-black rounded-lg py-3 w-full text-white disabled:opacity-20'
-            onClick={checkout}>
-            Checkout
-          </button>
-        </div>
+              </>
+            )}
+          </>
+        )}
       </Content>
     </Portal>
   );

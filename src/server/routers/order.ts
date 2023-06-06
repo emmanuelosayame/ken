@@ -20,6 +20,11 @@ const ItemS = z.object({
   price: z.number(),
 });
 
+// const PlaceOrderS = z.object({
+//   customerDetails:z.object({}),
+
+// })
+
 export const orderRouter = router({
   checkout: procedure
     .input(
@@ -47,4 +52,5 @@ export const orderRouter = router({
       const total = sum(mixed.map((x) => x.price * x.quantity));
       return { items: mixed, total };
     }),
+  // place: procedure.input(PlaceOrderS).mutation(async ({ ctx, input }) => {}),
 });

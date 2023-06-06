@@ -44,3 +44,5 @@ const Drink = () => {
 };
 
 export default MenuPage;
+
+export const revalidate = 14400;

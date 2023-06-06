@@ -1,14 +1,15 @@
 import { router } from "../trpc";
 import { orderRouter } from "./order";
 import { itemRouter } from "./item";
+import { customerRouter } from "./customer";
 
 export const appRouter = router({
   item: itemRouter,
   order: orderRouter,
+  customer: customerRouter,
   //   store: storeRouter,
   //   vendor: vendorRouter,
   //   order: orderRouter,
-  //   customer: customerRouter,
   //   category: categoryRouter,
   //   asset: assetRouter,
   //   notification: notificationRouter,

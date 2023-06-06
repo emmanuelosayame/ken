@@ -53,7 +53,7 @@ const FaqPage = () => {
         </p>
       </div>
 
-      <div className='bg-white/80 p-3 rounded-lg'>
+      <div className='bg-white/80 dark:bg-black/80 border p-3 rounded-lg'>
         <h2 className='text-lg font-medium text-center'>Contact Me</h2>
 
         <Formik initialValues={{}} onSubmit={() => {}}>

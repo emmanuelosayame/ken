@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { procedure, router } from "../trpc";
+import { procedure, protectedProcedure, router } from "../trpc";
 import { customerS, itemS } from "../db/schema";
 import { eq, inArray } from "drizzle-orm";
 

@@ -10,12 +10,15 @@ import {
 } from "react-loader-spinner";
 import { RemoveScroll } from "react-remove-scroll";
 
-export const LoadingBlur = () => {
+export const LoadingBlur = ({ overlay = true }: { overlay?: boolean }) => {
   return (
-    <RemoveScroll className='absolute inset-0 h-full flex justify-center items-center z-50 bg-black/40'>
+    <RemoveScroll
+      className={`absolute inset-0 h-full flex justify-center items-center z-50 ${
+        overlay ? "bg-black/40" : ""
+      }`}>
       <RotatingLines
         // height='120'
-        strokeColor='grey'
+        strokeColor={overlay ? "grey" : "black"}
         strokeWidth='5'
         animationDuration='0.75'
         width='80'

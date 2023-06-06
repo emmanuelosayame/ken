@@ -2,8 +2,10 @@ lockfileVersion: 5.4
 
 specifiers:
   '@heroicons/react': ^2.0.18
+  '@radix-ui/react-avatar': ^1.0.3
   '@radix-ui/react-collapsible': ^1.0.3
   '@radix-ui/react-dialog': ^1.0.3
+  '@supabase/auth-helpers-nextjs': ^0.7.2
   '@supabase/supabase-js': ^2.24.0
   '@trpc/client': ^10.28.2
   '@trpc/server': ^10.28.2
@@ -40,8 +42,10 @@ specifiers:
 
 dependencies:
   '@heroicons/react': 2.0.18_react@18.2.0
+  '@radix-ui/react-avatar': 1.0.3_lhsvdmrfrkqkmxtqosqgyd3k4i
   '@radix-ui/react-collapsible': 1.0.3_lhsvdmrfrkqkmxtqosqgyd3k4i
   '@radix-ui/react-dialog': 1.0.4_lhsvdmrfrkqkmxtqosqgyd3k4i
+  '@supabase/auth-helpers-nextjs': 0.7.2_kxjue6puk3vnd6f53gvjovthai
   '@supabase/supabase-js': 2.24.0
   '@trpc/client': 10.28.2_@trpc+server@10.28.2
   '@trpc/server': 10.28.2
@@ -492,6 +496,30 @@ packages:
       '@babel/runtime': 7.21.5
     dev: false
 
+  /@radix-ui/react-avatar/1.0.3_lhsvdmrfrkqkmxtqosqgyd3k4i:
+    resolution: {integrity: sha512-9ToF7YNex3Ste45LrAeTlKtONI9yVRt/zOS158iilIkW5K/Apeyb/TUQlcEFTEFvWr8Kzdi2ZYrm1/suiXPajQ==}
+    peerDependencies:
+      '@types/react': '*'
+      '@types/react-dom': '*'
+      react: ^16.8 || ^17.0 || ^18.0
+      react-dom: ^16.8 || ^17.0 || ^18.0
+    peerDependenciesMeta:
+      '@types/react':
+        optional: true
+      '@types/react-dom':
+        optional: true
+    dependencies:
+      '@babel/runtime': 7.21.5
+      '@radix-ui/react-context': 1.0.1_s3k22s5ab4eu26xuel7hiaraxy
+      '@radix-ui/react-primitive': 1.0.3_lhsvdmrfrkqkmxtqosqgyd3k4i
+      '@radix-ui/react-use-callback-ref': 1.0.1_s3k22s5ab4eu26xuel7hiaraxy
+      '@radix-ui/react-use-layout-effect': 1.0.1_s3k22s5ab4eu26xuel7hiaraxy
+      '@types/react': 18.2.6
+      '@types/react-dom': 18.2.4
+      react: 18.2.0
+      react-dom: 18.2.0_react@18.2.0
+    dev: false
+
   /@radix-ui/react-collapsible/1.0.3_lhsvdmrfrkqkmxtqosqgyd3k4i:
     resolution: {integrity: sha512-UBmVDkmR6IvDsloHVN+3rtx4Mi5TFvylYXpluuv0f37dtaz3H99bp8No0LGXRigVpl3UAT4l9j6bIchh42S/Gg==}
     peerDependencies:
@@ -798,6 +826,25 @@ packages:
 
   /@rushstack/eslint-patch/1.2.0:
     resolution: {integrity: sha512-sXo/qW2/pAcmT43VoRKOJbDOfV3cYpq3szSVfIThQXNt+E4DfKj361vaAt3c88U5tPUxzEswam7GW48PJqtKAg==}
+    dev: false
+
+  /@supabase/auth-helpers-nextjs/0.7.2_kxjue6puk3vnd6f53gvjovthai:
+    resolution: {integrity: sha512-n5IyGBYJV/WiR5Rgw4CUaiJYiOv9yW2of4ZP4EyzKt2O6/6rztt7PcGE4AoK2vERw+fb5F2QtJBdt6J5eOYCCw==}
+    peerDependencies:
+      '@supabase/supabase-js': ^2.19.0
+    dependencies:
+      '@supabase/auth-helpers-shared': 0.4.1_kxjue6puk3vnd6f53gvjovthai
+      '@supabase/supabase-js': 2.24.0
+      set-cookie-parser: 2.6.0
+    dev: false
+
+  /@supabase/auth-helpers-shared/0.4.1_kxjue6puk3vnd6f53gvjovthai:
+    resolution: {integrity: sha512-IEDX9JzWkIjQiLUaP4Qy5YDiG0jFQatWfS+jw8cCQs6QfbNdEPd2Y3qonwGHnM90CZom9SvjuylBv2pFVAL7Lw==}
+    peerDependencies:
+      '@supabase/supabase-js': ^2.19.0
+    dependencies:
+      '@supabase/supabase-js': 2.24.0
+      jose: 4.14.4
     dev: false
 
   /@supabase/functions-js/2.1.1:
@@ -2970,6 +3017,10 @@ packages:
     hasBin: true
     dev: false
 
+  /jose/4.14.4:
+    resolution: {integrity: sha512-j8GhLiKmUAh+dsFXlX1aJCbt5KMibuKb+d7j1JaOJG6s2UjX1PQlW+OKB/sD4a/5ZYF4RcmYmLSndOoU3Lt/3g==}
+    dev: false
+
   /js-tokens/4.0.0:
     resolution: {integrity: sha512-RdJUflcE3cUzKiMqQgsCu06FPu9UdIJO0beYbPhHN4k6apgJtifcoCtT9bcxOpYBtpD2kCM6Sbzg4CausW/PKQ==}
     dev: false
@@ -3914,6 +3965,10 @@ packages:
     hasBin: true
     dependencies:
       lru-cache: 6.0.0
+    dev: false
+
+  /set-cookie-parser/2.6.0:
+    resolution: {integrity: sha512-RVnVQxTXuerk653XfuliOxBP81Sf0+qfQE73LIYKcyMYHG94AuH0kgrQpRDuTZnSmjpysHmzxJXKNfa6PjFhyQ==}
     dev: false
 
   /shallowequal/1.1.0:

@@ -19,13 +19,11 @@ const ItemComponent = ({ data }: { data: Item }) => {
 
   return (
     <div className='col-span-1 bg-white rounded-lg p-3 flex flex-col gap-4'>
-      <div className='flex-1 flex gap-2'>
+      <div className='flex-1 flex gap-2 dark:text-black'>
         <div className='h-40 w-full bg-black rounded-xl' />
         <div className='space-y-2 text-end w-full'>
           <p className='text-2xl font-medium'>₦{data?.price}</p>
-          <h3 className='text-xl text-stone-600 font-semibold'>
-            {data?.title}
-          </h3>
+          <h3 className='text-xl text-stone-800 font-medium'>{data?.title}</h3>
           <p className='text-[15px] text-center'>{data?.description}</p>
         </div>
       </div>

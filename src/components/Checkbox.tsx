@@ -13,8 +13,8 @@ const Checkbox = ({
         type='button'
         onClick={handleChange}
         className={`rounded-lg  cursor-pointer group hover:brightness-75 
-        flex w-6 md:w-7 h-6 md:h-7 items-center justify-center shadow-md text-red-600 ${
-          checked ? "bg-red-300" : "bg-neutral-300"
+        flex w-6 md:w-7 h-6 md:h-7 items-center justify-center shadow-sm text-red-600 border border-red-500 ${
+          checked ? "" : ""
         }`}>
         {checked && <CheckIcon width={"85%"} />}
       </button>

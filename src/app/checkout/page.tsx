@@ -1,17 +1,33 @@
 import CheckoutComp from "@/components/CheckoutComp";
 import { customerS } from "@/server/db/schema";
 import { db } from "@/server/drizzle";
+import { createServerComponentClient } from "@supabase/auth-helpers-nextjs";
 import { eq } from "drizzle-orm";
+import { cookies } from "next/headers";
 import Link from "next/link";
 
-const CheckoutPage = async () => {
-  const userId = "useru87y3h66g7ygyg8t";
-  const [customer] = await db
-    .select()
-    .from(customerS)
-    .where(eq(customerS.id, userId));
+const supabase = createServerComponentClient({ cookies });
 
-  // console.log(customer);
+const getData = async () => {
+  try {
+    const { data } = await supabase.auth.getUser();
+    const userId = data.user?.id;
+    if (!userId) {
+      return;
+    }
+    const [customer] = await db
+      .select()
+      .from(customerS)
+      .where(eq(customerS.id, userId));
+    return customer;
+  } catch (err) {
+    const error = err as any;
+    throw new Error(error);
+  }
+};
+
+const CheckoutPage = async () => {
+  const customer = await getData();
 
   return (
     <div className='w-full px-5'>
