@@ -1,8 +1,5 @@
 "use client";
-import {
-  createClientComponentClient,
-  createServerComponentClient,
-} from "@supabase/auth-helpers-nextjs";
+import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 
 // Create a single supabase client for interacting with your database
 export const supabase = createClientComponentClient({

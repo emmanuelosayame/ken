@@ -6,9 +6,8 @@ import { eq } from "drizzle-orm";
 import { cookies } from "next/headers";
 import Link from "next/link";
 
-const supabase = createServerComponentClient({ cookies });
-
 const getData = async () => {
+  const supabase = createServerComponentClient({ cookies });
   try {
     const { data } = await supabase.auth.getUser();
     const userId = data.user?.id;
@@ -47,3 +46,5 @@ const CheckoutPage = async () => {
 };
 
 export default CheckoutPage;
+
+export const dynamic = "force-dynamic";
