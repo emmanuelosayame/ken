@@ -6,11 +6,10 @@ import { Content, Overlay, Portal } from "@radix-ui/react-dialog";
 import { MinusIcon, PlusIcon, TrashIcon } from "@heroicons/react/20/solid";
 import Checkbox from "./Checkbox";
 import sum from "lodash/sum";
-import { Cart } from "@/server/db/schema";
 import useSwr from "swr";
 import { client } from "@/server/client";
 import { LoadingBlur } from "./Loading";
-import { useSWRConfig } from "swr";
+import { Cart } from "../../t";
 
 const CartComponent = ({
   rawCart,

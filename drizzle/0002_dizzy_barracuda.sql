@@ -1,1 +1,0 @@
-ALTER TABLE "customers" ALTER COLUMN "id" SET DATA TYPE varchar(40);

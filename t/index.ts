@@ -1,7 +1,10 @@
-import { Cart } from "@/server/db/schema";
+export interface Cart {
+  id: number;
+  quantity: number;
+}
 
 export interface OrderT {
-  items: { id: number; quantity: number }[];
+  items: Cart[];
   orderDetails: {
     email: string;
     name: string;

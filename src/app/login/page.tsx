@@ -1,7 +1,7 @@
 "use client";
 
 import { InputTemp } from "@/components/InputTemp";
-import { supabase } from "@/server/supabase";
+import { supabase } from "@lib/supabase";
 import {
   ArrowLeftIcon,
   EyeIcon,

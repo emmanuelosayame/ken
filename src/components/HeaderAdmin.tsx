@@ -85,7 +85,7 @@ const MobileMenu = ({
             </button>
             <button
               onClick={() => {
-                router.push("menu");
+                router.push("/admin/orders");
                 setOpen(false);
               }}
               className='text-lg py-1.5 w-full hover:bg-stone-100'>
@@ -94,7 +94,7 @@ const MobileMenu = ({
 
             <button
               onClick={() => {
-                router.push("my-orders");
+                router.push("/admin/customers");
                 setOpen(false);
               }}
               className='text-lg py-1.5 w-full hover:bg-stone-100'>
@@ -102,7 +102,7 @@ const MobileMenu = ({
             </button>
             <button
               onClick={() => {
-                router.push("my-orders");
+                router.push("/admin/customers");
                 setOpen(false);
               }}
               className='text-lg py-1.5 w-full hover:bg-stone-100'>

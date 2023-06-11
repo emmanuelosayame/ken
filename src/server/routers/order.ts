@@ -1,27 +1,30 @@
 import { z } from "zod";
 import { procedure, router } from "../trpc";
-import { items as data } from "@lib/data";
 import { db } from "../drizzle";
-import { customerS, itemS, orderS } from "../db/schema";
-import { eq, inArray } from "drizzle-orm";
+import { itemS, orderS } from "../db/schema";
+import { asc, eq, inArray } from "drizzle-orm";
 import { sum } from "lodash";
 
-const CustomerS = z.object({
-  fullName: z.string(),
-  email: z.string(),
-  phone: z.string(),
-  id: z.string(),
-  location: z.string(),
-});
+const orderStatus = z.enum([
+  "pending",
+  "paid",
+  "prepared",
+  "delivered",
+  "issues",
+]);
 
-const ItemS = z.object({
-  title: z.string(),
-  description: z.string(),
-  price: z.number(),
+const createInput = z.object({
+  data: z.object({
+    orderId: z.string(),
+    description: z.string(),
+    total: z.number(),
+    status: orderStatus,
+  }),
 });
 
 const manyInput = z.object({
-  limit: z.number(),
+  limit: z.number().optional(),
+  status: orderStatus.optional(),
 });
 
 export const orderRouter = router({
@@ -54,10 +57,22 @@ export const orderRouter = router({
   // place: procedure.input(PlaceOrderS).mutation(async ({ ctx, input }) => {}),
   many: procedure.input(manyInput).query(async ({ ctx, input }) => {
     const { limit } = input;
-    return await ctx.db.select().from(orderS).limit(limit);
+    return await ctx.db
+      .select()
+      .from(orderS)
+      .limit(limit || 10);
   }),
   manyA: procedure.input(manyInput).query(async ({ ctx, input }) => {
-    const { limit } = input;
-    return await ctx.db.select().from(orderS).limit(limit);
+    const { limit, status } = input;
+    return await ctx.db
+      .select()
+      .from(orderS)
+      .where(status ? eq(orderS.status, status) : undefined)
+      .orderBy(asc(orderS.created_at))
+      .limit(limit || 10);
+  }),
+  createA: procedure.input(createInput).mutation(async ({ ctx, input }) => {
+    const { data } = input;
+    return await ctx.db.insert(orderS).values(data).returning();
   }),
 });

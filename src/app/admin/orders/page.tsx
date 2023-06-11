@@ -1,42 +1,55 @@
-import { limitText } from "@lib/helpers";
-import { Pagination, TableButton } from "./Client";
+"use client";
+import { dateLocale, timeLocale, limitText } from "@lib/helpers";
+import { Pagination, TableButton, orderStatusColor } from "../Client";
+import useSwr from "swr";
+import { client } from "@/server/client";
+import { Order } from "@/server/db/schema";
 
 const AdminOrders = () => {
+  const { data } = useSwr(
+    [`orders.many.admin`],
+    async () => await client.order.manyA.query({ limit: 10 })
+  );
+
   return (
     <div className='w-full h-full'>
-      <div className='p-2'>
+      <div className='p-4'>
         <h2 className='text-lg font-medium'>Orders</h2>
       </div>
-      <div className='border border-neutral-300 rounded-xl'>
-        <table
-          className='w-full border-spacing-y-1 border-spacing-x-2 border-separate text-[14px]
+      <table
+        className='w-full border-spacing-y-1 border-separate text-[14px]
          md:text-base text-center'>
-          <thead>
-            <tr className='border-b border-b-neutral-400'>
-              <td>Order ID</td>
-              <td>Date</td>
-              <td>Description</td>
-              <td></td>
-            </tr>
-          </thead>
+        <thead className='font-semibold bg-stone-300 rounded-t-2xl overflow-hidden'>
+          <tr className=''>
+            {/* <td>Order ID</td> */}
+            <td className='py-1'>Date</td>
+            <td className='py-1'>Description</td>
+            <td className='py-1'>Status</td>
+            <td className='py-1'></td>
+          </tr>
+        </thead>
 
-          <tbody>
-            {[1, 2, 3, 4, 5].map((order) => (
-              <tr key={order}>
-                <td className='py-1'>{limitText("3ede4r4r4f442ey1", 10)}</td>
-                <td className='py-1 flex flex-col'>
-                  <span>11/6/2023</span>
-                  <span>05:28</span>
-                </td>
-                <td className='py-1'>jumbo Shawarma</td>
-                <td>
-                  <TableButton id={order.toString()} />
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
+        <tbody className=''>
+          {data?.map((order) => (
+            <tr key={order.id} className='bg-white/60'>
+              {/* <td className='py-1'>{limitText("3ede4r4r4f442ey1", 10)}</td> */}
+              <td className='py-1 flex flex-col'>
+                <span className='text-red-500 font-medium'>
+                  {timeLocale(order.created_at)}
+                </span>
+                <span className='text-xs'>{dateLocale(order.created_at)}</span>
+              </td>
+              <td className='py-1'>{order.description}</td>
+              <td className={`py-1 ${orderStatusColor(order.status)}`}>
+                {order.status}
+              </td>
+              <td>
+                <TableButton id={order.toString()} />
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
       <Pagination />
     </div>
   );

@@ -20,6 +20,11 @@ export const limitText = (sentence?: string | null, limit?: number) =>
       : sentence
     : sentence;
 
+export const timeLocale = (date: Date | string, showYear?: boolean) => {
+  const conv = new Date(date);
+  return conv.toLocaleTimeString("en", { hour: "numeric", minute: "numeric" });
+};
+
 export const dateLocale = (date: Date | string, showYear?: boolean) => {
   const conv = new Date(date);
   return conv.toLocaleDateString("en", {

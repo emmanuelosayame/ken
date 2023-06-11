@@ -1,42 +1,44 @@
 import { InferModel } from "drizzle-orm";
 import {
-  date,
   integer,
   pgEnum,
   pgTable,
   serial,
   text,
+  timestamp,
   uniqueIndex,
   varchar,
 } from "drizzle-orm/pg-core";
 
-// declaring enum in database
-// export const popularityEnum = pgEnum("popularity", [
-//   "unknown",
-//   "known",
-//   "popular",
-// ]);
-
-export const orderStatusEnum = pgEnum("orderStatus", [
+export const orderStatusEnum = pgEnum("order_status", [
   "pending",
-  "success",
-  "settled",
-  "failed",
-  "cancelled",
+  "paid",
+  "prepared",
+  "delivered",
+  "issues",
 ]);
 
-// export const userS = pgTable("users", {
-//   id: serial("id").primaryKey(),
-//   fullName: text("full_name"),
-//   phone: varchar("phone", { length: 256 }),
-// });
+export const paymentStatusEnum = pgEnum("payment_status", [
+  "pending",
+  "success",
+  "failed",
+  "cancelled",
+  "refund",
+]);
+
+export const itemTagEnum = pgEnum("tag", [
+  "shawarma",
+  "barbeque",
+  "drink",
+  "hotdog",
+]);
 
 export const contactS = pgTable("contacts", {
   id: serial("id").primaryKey(),
   email: text("reference").notNull(),
   phone: integer("amount").notNull(),
   message: text("description"),
-  created_at: date("created_at").defaultNow().notNull(),
+  created_at: timestamp("created_at").defaultNow().notNull(),
 });
 
 export const paymentS = pgTable(
@@ -46,48 +48,36 @@ export const paymentS = pgTable(
     reference: text("reference").notNull(),
     amount: integer("amount").notNull(),
     description: text("description"),
-    // status: orderStatusEnum,
-    created_at: date("created_at").defaultNow().notNull(),
-    settled_at: date("settled_at"),
+    status: paymentStatusEnum("payment_status"),
+    created_at: timestamp("created_at").defaultNow().notNull(),
+    settled_at: timestamp("settled_at"),
   },
   (payment) => {
     return {
-      nameIndex: uniqueIndex("order_id_idx").on(payment.reference),
+      nameIndex: uniqueIndex("reference_idx").on(payment.reference),
     };
   }
 );
 
-export const orderS = pgTable(
-  "orders",
-  {
-    id: serial("id").primaryKey(),
-    orderId: text("order_id").notNull(),
-    total: integer("total").notNull(),
-    description: text("description"),
-    // status: orderStatusEnum,
-    paid_at: date("paid_at").defaultNow().notNull(),
-  },
-  (order) => {
-    return {
-      nameIndex: uniqueIndex("order_id_idx").on(order.orderId),
-    };
-  }
-);
-
-export const cartS = pgTable("carts", {
+export const orderS = pgTable("orders", {
   id: serial("id").primaryKey(),
-  quantity: integer("quantity").default(0).notNull(),
-  uid: varchar("uid").notNull(),
+  orderId: text("order_id").notNull(),
+  reference: text("reference"),
+  total: integer("total").notNull(),
+  description: text("description"),
+  status: orderStatusEnum("order_status").notNull(),
+  created_at: timestamp("created_at").defaultNow().notNull(),
+  paid_at: timestamp("paid_at"),
 });
 
 export const itemS = pgTable(
   "items",
   {
     id: serial("id").primaryKey(),
-    title: text("title"),
+    title: text("title").notNull(),
     price: integer("price").notNull(),
     description: text("description"),
-    // sold: integer("sold"),
+    tag: itemTagEnum("tag").notNull(),
   },
   (item) => {
     return {
@@ -104,9 +94,18 @@ export const customerS = pgTable("customers", {
   location: text("location"),
 });
 
+export const guestS = pgTable("guests", {
+  id: varchar("id", { length: 40 }).primaryKey(),
+  fullName: text("full_name"),
+  email: varchar("email", { length: 256 }),
+  phone: varchar("phone", { length: 256 }),
+  location: text("location"),
+});
+
 export type Customer = InferModel<typeof customerS>;
 export type Item = InferModel<typeof itemS>;
-export type Cart = Omit<InferModel<typeof cartS>, "uid">;
+export type Order = InferModel<typeof orderS>;
+// export type Cart = Omit<InferModel<typeof cartS>, "uid">;
 
 // export const orderS = pgTable("users", {
 //   id: serial("id").primaryKey(),

@@ -1,10 +1,11 @@
 import ItemComponent from "@/components/Item";
 import { itemS } from "@/server/db/schema";
 import { db } from "@/server/drizzle";
+import { eq, ne } from "drizzle-orm";
 
 const getData = async () => {
   try {
-    const items = await db.select().from(itemS);
+    const items = await db.select().from(itemS).where(ne(itemS.tag, "drink"));
     if (items.length > 0) {
       return items;
     }

@@ -15,6 +15,7 @@ const ItemS = z.object({
   title: z.string(),
   description: z.string(),
   price: z.number(),
+  tag: z.enum(["shawarma", "drink"]),
 });
 
 export const itemRouter = router({

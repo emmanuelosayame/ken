@@ -16,7 +16,7 @@ import dynamic from "next/dynamic";
 import useMutate from "swr/mutation";
 import { client } from "@/server/client";
 import { LoadingBlur } from "./Loading";
-import { supabase } from "@/server/supabase";
+import { supabase } from "@lib/supabase";
 import { useSession } from "@lib/hooks";
 import { Session } from "@supabase/supabase-js";
 import Avatar from "./radix/Avatar";

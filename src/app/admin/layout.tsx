@@ -14,7 +14,7 @@ export default function RootLayout({
     <main className='min-h-screen items-center justify-between pb-10 pt-16 w-full'>
       <Header />
 
-      <div className='p-3 w-full'>{children}</div>
+      <div className=' w-full'>{children}</div>
 
       <div
         className='fixed bottom-0 left-0 flex h-36 w-full items-end justify-center bg-gradient-to-t
