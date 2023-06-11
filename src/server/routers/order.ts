@@ -2,7 +2,7 @@ import { z } from "zod";
 import { procedure, router } from "../trpc";
 import { items as data } from "@lib/data";
 import { db } from "../drizzle";
-import { customerS, itemS } from "../db/schema";
+import { customerS, itemS, orderS } from "../db/schema";
 import { eq, inArray } from "drizzle-orm";
 import { sum } from "lodash";
 
@@ -20,10 +20,9 @@ const ItemS = z.object({
   price: z.number(),
 });
 
-// const PlaceOrderS = z.object({
-//   customerDetails:z.object({}),
-
-// })
+const manyInput = z.object({
+  limit: z.number(),
+});
 
 export const orderRouter = router({
   checkout: procedure
@@ -53,4 +52,12 @@ export const orderRouter = router({
       return { items: mixed, total };
     }),
   // place: procedure.input(PlaceOrderS).mutation(async ({ ctx, input }) => {}),
+  many: procedure.input(manyInput).query(async ({ ctx, input }) => {
+    const { limit } = input;
+    return await ctx.db.select().from(orderS).limit(limit);
+  }),
+  manyA: procedure.input(manyInput).query(async ({ ctx, input }) => {
+    const { limit } = input;
+    return await ctx.db.select().from(orderS).limit(limit);
+  }),
 });

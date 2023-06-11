@@ -1,5 +1,6 @@
 import { InferModel } from "drizzle-orm";
 import {
+  date,
   integer,
   pgEnum,
   pgTable,
@@ -16,11 +17,62 @@ import {
 //   "popular",
 // ]);
 
+export const orderStatusEnum = pgEnum("orderStatus", [
+  "pending",
+  "success",
+  "settled",
+  "failed",
+  "cancelled",
+]);
+
 // export const userS = pgTable("users", {
 //   id: serial("id").primaryKey(),
 //   fullName: text("full_name"),
 //   phone: varchar("phone", { length: 256 }),
 // });
+
+export const contactS = pgTable("contacts", {
+  id: serial("id").primaryKey(),
+  email: text("reference").notNull(),
+  phone: integer("amount").notNull(),
+  message: text("description"),
+  created_at: date("created_at").defaultNow().notNull(),
+});
+
+export const paymentS = pgTable(
+  "payments",
+  {
+    id: serial("id").primaryKey(),
+    reference: text("reference").notNull(),
+    amount: integer("amount").notNull(),
+    description: text("description"),
+    // status: orderStatusEnum,
+    created_at: date("created_at").defaultNow().notNull(),
+    settled_at: date("settled_at"),
+  },
+  (payment) => {
+    return {
+      nameIndex: uniqueIndex("order_id_idx").on(payment.reference),
+    };
+  }
+);
+
+export const orderS = pgTable(
+  "orders",
+  {
+    id: serial("id").primaryKey(),
+    orderId: text("order_id").notNull(),
+    total: integer("total").notNull(),
+    description: text("description"),
+    // status: orderStatusEnum,
+    paid_at: date("paid_at").defaultNow().notNull(),
+  },
+  (order) => {
+    return {
+      nameIndex: uniqueIndex("order_id_idx").on(order.orderId),
+    };
+  }
+);
 
 export const cartS = pgTable("carts", {
   id: serial("id").primaryKey(),

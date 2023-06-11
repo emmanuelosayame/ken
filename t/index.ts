@@ -25,3 +25,8 @@ export interface CartSlice {
   removeItems: (itemsId: (string | number)[]) => void;
   // removeAll: () => void;
 }
+
+export interface RSCProps {
+  params: { id: string };
+  searchParams: { [key: string]: string };
+}

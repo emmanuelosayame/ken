@@ -2,6 +2,7 @@
 
 import { supabase } from "@/server/supabase";
 import { Session } from "@supabase/supabase-js";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 
 export const useSession = () => {
@@ -32,4 +33,16 @@ export const useSSR = () => {
   const [hydrated, setHydrated] = useState(false);
   useEffect(() => setHydrated(true), []);
   return hydrated;
+};
+
+export const usePagn = (path?: string) => {
+  const router = useRouter();
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
+  const pagn = Number(searchParams.get("pg") || "1");
+
+  const prev = () => router.replace(`${path || pathname}?pg=${pagn - 1}`);
+  const next = () => router.replace(`${path || pathname}?pg=${pagn + 1}`);
+
+  return { pagn, prev, next };
 };

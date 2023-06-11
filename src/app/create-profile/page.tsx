@@ -14,7 +14,28 @@ import { Form, Formik } from "formik";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+import { RemoveScroll } from "react-remove-scroll";
 import useMutate from "swr/mutation";
+
+const SuccessScreen = () => {
+  const router = useRouter();
+  return (
+    <RemoveScroll className='fixed z-40 bg-black/40 backdrop-blur-sm inset-0 flex justify-center items-center'>
+      <div className='bg-white rounded-lg p-3 w-11/12 h-44 flex flex-col justify-between items-center'>
+        <h2 className='text-xl text-green-500 font-medium text-center'>
+          Profile Created
+        </h2>
+
+        <p>You need to confirm your email to login</p>
+        <button
+          className='text-white bg-stone-600 rounded-lg py-2 px-6 self-end'
+          onClick={() => router.replace("/")}>
+          Back Home
+        </button>
+      </div>
+    </RemoveScroll>
+  );
+};
 
 const formIv = {
   fullName: "",
@@ -29,6 +50,8 @@ const formIv = {
 const NewUserPage = () => {
   const router = useRouter();
 
+  const [open, setOpen] = useState(false);
+
   const [vis, setVis] = useState({ p: false, cp: false });
 
   const { trigger } = useMutate(
@@ -37,7 +60,7 @@ const NewUserPage = () => {
       await client.customer.create.mutate({ data: arg }),
     {
       onSuccess: () => {
-        router.push("/login");
+        setOpen(true);
       },
     }
   );
@@ -50,6 +73,7 @@ const NewUserPage = () => {
 
   return (
     <div className='flex flex-col h-full min-h-screen p-5 gap-3'>
+      {open && <SuccessScreen />}
       <div className='flex justify-between'>
         <button onClick={() => router.back()}>
           <ArrowLeftIcon width={30} />
