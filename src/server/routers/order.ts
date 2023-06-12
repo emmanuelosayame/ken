@@ -1,8 +1,8 @@
 import { z } from "zod";
-import { procedure, router } from "../trpc";
+import { procedure, protectedProcedure, router } from "../trpc";
 import { db } from "../drizzle";
 import { itemS, orderS } from "../db/schema";
-import { asc, eq, inArray } from "drizzle-orm";
+import { and, asc, eq, inArray } from "drizzle-orm";
 import { sum } from "lodash";
 
 const orderStatus = z.enum([
@@ -55,11 +55,16 @@ export const orderRouter = router({
       return { items: mixed, total };
     }),
   // place: procedure.input(PlaceOrderS).mutation(async ({ ctx, input }) => {}),
-  many: procedure.input(manyInput).query(async ({ ctx, input }) => {
-    const { limit } = input;
+  many: protectedProcedure.input(manyInput).query(async ({ ctx, input }) => {
+    const uid = ctx.session.user.id;
+    const { limit, status } = input;
     return await ctx.db
       .select()
       .from(orderS)
+      .where(
+        and(status ? eq(orderS.status, status) : undefined, eq(orderS.uid, uid))
+      )
+      .orderBy(asc(orderS.created_at))
       .limit(limit || 10);
   }),
   manyA: procedure.input(manyInput).query(async ({ ctx, input }) => {

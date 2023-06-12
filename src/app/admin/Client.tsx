@@ -30,15 +30,6 @@ export const Pagination = () => {
   );
 };
 
-export const orderStatusColor = (status: Order["status"]) => {
-  switch (status) {
-    case "paid":
-      return "text-green-600";
-    case "prepared":
-      return "text-amber-500";
-  }
-};
-
 export const Client = ({ children }: { children: ReactNode }) => {
   return <SWRConfig value={{ revalidateOnFocus: false }}>{children}</SWRConfig>;
 };

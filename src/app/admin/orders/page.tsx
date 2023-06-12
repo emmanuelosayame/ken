@@ -1,9 +1,13 @@
 "use client";
-import { dateLocale, timeLocale, limitText } from "@lib/helpers";
-import { Pagination, TableButton, orderStatusColor } from "../Client";
+import {
+  dateLocale,
+  timeLocale,
+  limitText,
+  orderStatusColor,
+} from "@lib/helpers";
+import { Pagination, TableButton } from "../Client";
 import useSwr from "swr";
 import { client } from "@/server/client";
-import { Order } from "@/server/db/schema";
 
 const AdminOrders = () => {
   const { data } = useSwr(

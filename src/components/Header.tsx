@@ -128,11 +128,19 @@ const MobileMenu = ({
                 </button>
                 <button
                   onClick={() => {
-                    router.push("my-orders");
+                    router.push("my-profile");
                     setOpen(false);
                   }}
                   className='text-lg py-1.5 w-full hover:bg-stone-100'>
                   My Profile
+                </button>
+                <button
+                  onClick={async () => {
+                    await supabase.auth.signOut();
+                    setOpen(false);
+                  }}
+                  className='text-lg py-1.5 w-full text-amber-800 hover:bg-stone-100'>
+                  Sign Out
                 </button>
               </>
             )}

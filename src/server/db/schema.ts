@@ -62,6 +62,7 @@ export const paymentS = pgTable(
 export const orderS = pgTable("orders", {
   id: serial("id").primaryKey(),
   orderId: text("order_id").notNull(),
+  uid: text("uid"),
   reference: text("reference"),
   total: integer("total").notNull(),
   description: text("description"),
@@ -88,10 +89,10 @@ export const itemS = pgTable(
 
 export const customerS = pgTable("customers", {
   id: varchar("id", { length: 40 }).primaryKey(),
-  fullName: text("full_name"),
-  email: varchar("email", { length: 256 }),
-  phone: varchar("phone", { length: 256 }),
-  location: text("location"),
+  fullName: text("full_name").notNull().default(""),
+  email: varchar("email", { length: 256 }).notNull().default(""),
+  phone: varchar("phone", { length: 256 }).notNull().default(""),
+  location: text("location").notNull().default(""),
 });
 
 export const guestS = pgTable("guests", {

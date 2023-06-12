@@ -1,0 +1,8 @@
+ALTER TABLE "customers" ALTER COLUMN "full_name" SET DEFAULT '';
+ALTER TABLE "customers" ALTER COLUMN "full_name" SET NOT NULL;
+ALTER TABLE "customers" ALTER COLUMN "email" SET DEFAULT '';
+ALTER TABLE "customers" ALTER COLUMN "email" SET NOT NULL;
+ALTER TABLE "customers" ALTER COLUMN "phone" SET DEFAULT '';
+ALTER TABLE "customers" ALTER COLUMN "phone" SET NOT NULL;
+ALTER TABLE "customers" ALTER COLUMN "location" SET DEFAULT '';
+ALTER TABLE "customers" ALTER COLUMN "location" SET NOT NULL;

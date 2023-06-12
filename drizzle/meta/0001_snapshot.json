@@ -1,8 +1,8 @@
 {
   "version": "5",
   "dialect": "pg",
-  "id": "1fb3bd41-23c8-4132-ba5b-80afe8c78d99",
-  "prevId": "aa7f639a-c6e8-4817-b3a1-4ca473d5ae50",
+  "id": "42425b5f-690d-412e-8317-57f7b6d21567",
+  "prevId": "66316282-2ad1-4e44-b131-b38f4505a45d",
   "tables": {
     "contacts": {
       "name": "contacts",
@@ -14,23 +14,23 @@
           "primaryKey": true,
           "notNull": true
         },
-        "reference": {
-          "name": "reference",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "amount": {
-          "name": "amount",
-          "type": "integer",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "description": {
-          "name": "description",
+        "name": {
+          "name": "name",
           "type": "text",
           "primaryKey": false,
           "notNull": false
+        },
+        "emailphone": {
+          "name": "emailphone",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "message": {
+          "name": "message",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
         },
         "created_at": {
           "name": "created_at",
@@ -58,25 +58,29 @@
           "name": "full_name",
           "type": "text",
           "primaryKey": false,
-          "notNull": false
+          "notNull": true,
+          "default": "''"
         },
         "email": {
           "name": "email",
           "type": "varchar(256)",
           "primaryKey": false,
-          "notNull": false
+          "notNull": true,
+          "default": "''"
         },
         "phone": {
           "name": "phone",
           "type": "varchar(256)",
           "primaryKey": false,
-          "notNull": false
+          "notNull": true,
+          "default": "''"
         },
         "location": {
           "name": "location",
           "type": "text",
           "primaryKey": false,
-          "notNull": false
+          "notNull": true,
+          "default": "''"
         }
       },
       "indexes": {},
@@ -184,6 +188,12 @@
           "type": "text",
           "primaryKey": false,
           "notNull": true
+        },
+        "uid": {
+          "name": "uid",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
         },
         "reference": {
           "name": "reference",

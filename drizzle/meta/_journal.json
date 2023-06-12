@@ -5,22 +5,15 @@
     {
       "idx": 0,
       "version": "5",
-      "when": 1686505110510,
-      "tag": "0000_many_klaw",
+      "when": 1686583115315,
+      "tag": "0000_luxuriant_menace",
       "breakpoints": false
     },
     {
       "idx": 1,
       "version": "5",
-      "when": 1686506016160,
-      "tag": "0001_special_johnny_blaze",
-      "breakpoints": false
-    },
-    {
-      "idx": 2,
-      "version": "5",
-      "when": 1686574294394,
-      "tag": "0002_equal_scalphunter",
+      "when": 1686588323392,
+      "tag": "0001_cold_prism",
       "breakpoints": false
     }
   ]

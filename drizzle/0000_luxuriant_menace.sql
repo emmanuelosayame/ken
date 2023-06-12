@@ -18,9 +18,9 @@ END $$;
 
 CREATE TABLE IF NOT EXISTS "contacts" (
 	"id" serial PRIMARY KEY NOT NULL,
-	"reference" text NOT NULL,
-	"amount" integer NOT NULL,
-	"description" text,
+	"name" text,
+	"emailphone" text NOT NULL,
+	"message" text NOT NULL,
 	"created_at" timestamp DEFAULT now() NOT NULL
 );
 
@@ -51,11 +51,13 @@ CREATE TABLE IF NOT EXISTS "items" (
 CREATE TABLE IF NOT EXISTS "orders" (
 	"id" serial PRIMARY KEY NOT NULL,
 	"order_id" text NOT NULL,
+	"uid" text,
 	"reference" text,
 	"total" integer NOT NULL,
 	"description" text,
-	"order_status" order_status DEFAULT 'pending',
-	"paid_at" timestamp DEFAULT now() NOT NULL
+	"order_status" order_status NOT NULL,
+	"created_at" timestamp DEFAULT now() NOT NULL,
+	"paid_at" timestamp
 );
 
 CREATE TABLE IF NOT EXISTS "payments" (

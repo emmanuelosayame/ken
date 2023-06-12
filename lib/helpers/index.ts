@@ -1,3 +1,5 @@
+import { Order } from "@/server/db/schema";
+
 // import axios from "axios";
 export function getBaseUrl() {
   if (typeof window !== "undefined")
@@ -50,6 +52,16 @@ export const dateTimeLocale = (date: Date | string) => {
   });
 };
 
+export const orderStatusColor = (status: Order["status"]) => {
+  switch (status) {
+    case "paid":
+      return "text-green-600";
+    case "prepared":
+      return "text-amber-500";
+  }
+  return "";
+};
+
 export const getInitials = (name?: string | null) =>
   name &&
   name
@@ -78,5 +90,3 @@ const end = new Date();
 end.setHours(23, 59, 59, 999);
 
 export const today = { start, end };
-
-// export const isSub

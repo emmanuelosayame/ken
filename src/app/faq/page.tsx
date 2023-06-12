@@ -1,20 +1,30 @@
 "use client";
 
 import { InputTemp, InputTextarea } from "@/components/InputTemp";
+import { LoadingBlur } from "@/components/Loading";
 import { client } from "@/server/client";
 import { Contact } from "@/server/db/schema";
 import { contactVS } from "@lib/validation";
 import { Form, Formik } from "formik";
+import { useState } from "react";
 import useMutation from "swr/mutation";
 
 const FaqPage = () => {
-  const { trigger } = useMutation(
+  const [status, setStatus] = useState<"idle" | "success" | "error">("idle");
+
+  const { trigger, isMutating } = useMutation(
     ["contacts"],
     async (_, { arg }: { arg: Omit<Contact, "id" | "createdAt"> }) =>
-      await client.contact.create.mutate(arg)
+      await client.contact.create.mutate(arg),
+    {
+      onSuccess: () => setStatus("success"),
+      onError: () => setStatus("error"),
+    }
   );
+
   return (
     <div className='pt-10 w-[95%]'>
+      {isMutating && <LoadingBlur />}
       <h1 className='text-xl font-semibold text-center'>
         Frequently Asked Questions
       </h1>
@@ -65,49 +75,55 @@ const FaqPage = () => {
       <div className='bg-white/80 dark:bg-black/80 border p-3 rounded-lg'>
         <h2 className='text-lg font-medium text-center'>Contact Us</h2>
 
-        <Formik
-          initialValues={{
-            name: "",
-            emailphone: "",
-            message: "",
-          }}
-          validationSchema={contactVS}
-          onSubmit={(values) => {
-            trigger(values);
-          }}>
-          {({ getFieldProps, touched, errors }) => (
-            <Form className='space-y-2'>
-              <InputTemp
-                required
-                label='Name'
-                {...getFieldProps("name")}
-                touched={touched.name}
-                error={errors.name}
-                maxLength={70}
-              />
-              <InputTemp
-                required
-                label='Email / Phone Number'
-                {...getFieldProps("emailphone")}
-                touched={touched.emailphone}
-                error={errors.emailphone}
-                maxLength={50}
-              />
-              <InputTextarea
-                required
-                label='Message'
-                {...getFieldProps("message")}
-                touched={touched.message}
-                error={errors.message}
-                maxLength={500}
-              />
+        {status === "success" ? (
+          <p className='text-center py-20 px-2'>
+            {"Thank you for contacting us, we'll get back to you soonest"}
+          </p>
+        ) : (
+          <Formik
+            initialValues={{
+              name: "",
+              emailphone: "",
+              message: "",
+            }}
+            validationSchema={contactVS}
+            onSubmit={(values) => {
+              trigger(values);
+            }}>
+            {({ getFieldProps, touched, errors }) => (
+              <Form className='space-y-2'>
+                <InputTemp
+                  required
+                  label='Name'
+                  {...getFieldProps("name")}
+                  touched={touched.name}
+                  error={errors.name}
+                  maxLength={70}
+                />
+                <InputTemp
+                  required
+                  label='Email / Phone Number'
+                  {...getFieldProps("emailphone")}
+                  touched={touched.emailphone}
+                  error={errors.emailphone}
+                  maxLength={50}
+                />
+                <InputTextarea
+                  required
+                  label='Message'
+                  {...getFieldProps("message")}
+                  touched={touched.message}
+                  error={errors.message}
+                  maxLength={500}
+                />
 
-              <button className='btn w-full' type='submit'>
-                Send
-              </button>
-            </Form>
-          )}
-        </Formik>
+                <button className='btn w-full' type='submit'>
+                  Send
+                </button>
+              </Form>
+            )}
+          </Formik>
+        )}
       </div>
     </div>
   );

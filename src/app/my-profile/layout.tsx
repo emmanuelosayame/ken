@@ -2,7 +2,7 @@ import Layout from "@/components/Layout";
 import { ReactNode } from "react";
 
 export const metadata = {
-  title: "My Orders | Ken's Food",
+  title: "My Profile | Ken's Food",
   description: "Shawarma and Babeque",
 };
 
