@@ -179,7 +179,7 @@ const CartComponent = ({
                               className='bg-red-300 flex items-center justify-center
                    rounded-lg h-6 md:h-7 w-6 text-red-600 shadow-md disabled:opacity-70'
                               aria-label='decreament-item'
-                              disabled={cartItem.quantity > 10}
+                              disabled={cartItem.quantity > 19}
                               onClick={() =>
                                 modifyQ(cartItem.id, cartItem.quantity + 1)
                               }>

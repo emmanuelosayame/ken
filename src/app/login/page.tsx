@@ -12,6 +12,7 @@ import { AuthError } from "@supabase/supabase-js";
 import { Form, Formik } from "formik";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+import { GoogleSvg } from "@lib/Svg";
 
 const formIv = {
   email: "",
@@ -35,10 +36,17 @@ const LoginPage = () => {
     }
   };
 
+  const loginGoogle = async () => {
+    await supabase.auth.signInWithOAuth({
+      provider: "google",
+      options: { redirectTo: "/menu" },
+    });
+  };
+
   return (
     <div className='flex flex-col h-full min-h-screen p-5'>
       <div className='flex justify-between'>
-        <button onClick={() => router.back()}>
+        <button onClick={() => router.push("/")}>
           <ArrowLeftIcon width={30} />
         </button>
       </div>
@@ -50,7 +58,7 @@ const LoginPage = () => {
         validationSchema={createPVS.pick(["email", "password"])}
         enableReinitialize>
         {({ getFieldProps, touched, errors }) => (
-          <Form className=' bg-white rounded-lg p-3 my-auto'>
+          <Form className=' bg-white rounded-lg p-3 mt-40 space-y-3 shadow-sm'>
             {error && (
               <p className='text-sm text-red-500 text-center'>
                 {error.message}
@@ -87,6 +95,14 @@ const LoginPage = () => {
 
             <button className='btn' type='submit'>
               Login
+            </button>
+
+            <button
+              className='btn-outline gap-4'
+              type='button'
+              onClick={loginGoogle}>
+              <GoogleSvg />
+              <p>Continue with Google</p>
             </button>
           </Form>
         )}
