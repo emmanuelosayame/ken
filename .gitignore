@@ -41,6 +41,3 @@ next-env.d.ts
 /.migrate.js*
 .migrate.js*
 migrate.js*
-.env
-.env
-.env

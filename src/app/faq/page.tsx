@@ -1,9 +1,18 @@
 "use client";
 
 import { InputTemp, InputTextarea } from "@/components/InputTemp";
+import { client } from "@/server/client";
+import { Contact } from "@/server/db/schema";
+import { contactVS } from "@lib/validation";
 import { Form, Formik } from "formik";
+import useMutation from "swr/mutation";
 
 const FaqPage = () => {
+  const { trigger } = useMutation(
+    ["contacts"],
+    async (_, { arg }: { arg: Omit<Contact, "id" | "createdAt"> }) =>
+      await client.contact.create.mutate(arg)
+  );
   return (
     <div className='pt-10 w-[95%]'>
       <h1 className='text-xl font-semibold text-center'>
@@ -35,7 +44,7 @@ const FaqPage = () => {
         </p>
 
         <li className='text-base font-medium'>
-          I am not satisfied with my pizza purchase, what can I do?
+          I am not satisfied with my purchase, what can I do?
         </li>
         <p className='text-sm ml-4 mb-2'>
           We are always Hungry to Be Better and love to hear from you. Write us
@@ -54,14 +63,48 @@ const FaqPage = () => {
       </div>
 
       <div className='bg-white/80 dark:bg-black/80 border p-3 rounded-lg'>
-        <h2 className='text-lg font-medium text-center'>Contact Me</h2>
+        <h2 className='text-lg font-medium text-center'>Contact Us</h2>
 
-        <Formik initialValues={{}} onSubmit={() => {}}>
-          {({}) => (
-            <Form>
-              <InputTemp required label='Name' />
-              <InputTemp required label='Email' />
-              <InputTextarea required label='Message' />
+        <Formik
+          initialValues={{
+            name: "",
+            emailphone: "",
+            message: "",
+          }}
+          validationSchema={contactVS}
+          onSubmit={(values) => {
+            trigger(values);
+          }}>
+          {({ getFieldProps, touched, errors }) => (
+            <Form className='space-y-2'>
+              <InputTemp
+                required
+                label='Name'
+                {...getFieldProps("name")}
+                touched={touched.name}
+                error={errors.name}
+                maxLength={70}
+              />
+              <InputTemp
+                required
+                label='Email / Phone Number'
+                {...getFieldProps("emailphone")}
+                touched={touched.emailphone}
+                error={errors.emailphone}
+                maxLength={50}
+              />
+              <InputTextarea
+                required
+                label='Message'
+                {...getFieldProps("message")}
+                touched={touched.message}
+                error={errors.message}
+                maxLength={500}
+              />
+
+              <button className='btn w-full' type='submit'>
+                Send
+              </button>
             </Form>
           )}
         </Formik>

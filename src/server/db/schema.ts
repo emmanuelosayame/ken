@@ -35,10 +35,10 @@ export const itemTagEnum = pgEnum("tag", [
 
 export const contactS = pgTable("contacts", {
   id: serial("id").primaryKey(),
-  email: text("reference").notNull(),
-  phone: integer("amount").notNull(),
-  message: text("description"),
-  created_at: timestamp("created_at").defaultNow().notNull(),
+  name: text("name"),
+  emailphone: text("emailphone").notNull(),
+  message: text("message").notNull(),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
 });
 
 export const paymentS = pgTable(
@@ -105,6 +105,7 @@ export const guestS = pgTable("guests", {
 export type Customer = InferModel<typeof customerS>;
 export type Item = InferModel<typeof itemS>;
 export type Order = InferModel<typeof orderS>;
+export type Contact = InferModel<typeof contactS>;
 // export type Cart = Omit<InferModel<typeof cartS>, "uid">;
 
 // export const orderS = pgTable("users", {

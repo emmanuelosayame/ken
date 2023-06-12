@@ -56,7 +56,7 @@ body {
     @apply text-sm border border-stone-500 text-stone-500 rounded-lg py-3 w-full hover:bg-stone-200 shadow-sm flex justify-center;
   }
   .btn {
-    @apply text-sm bg-stone-500 text-white rounded-lg py-3 w-full hover:brightness-75 shadow-sm flex justify-center;
+    @apply text-sm bg-stone-500 text-white rounded-lg py-3 w-full hover:brightness-75 shadow-md flex justify-center;
   }
   .center-x {
     @apply left-1/2 -translate-x-1/2;

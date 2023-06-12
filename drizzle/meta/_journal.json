@@ -15,6 +15,13 @@
       "when": 1686506016160,
       "tag": "0001_special_johnny_blaze",
       "breakpoints": false
+    },
+    {
+      "idx": 2,
+      "version": "5",
+      "when": 1686574294394,
+      "tag": "0002_equal_scalphunter",
+      "breakpoints": false
     }
   ]
 }

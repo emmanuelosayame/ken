@@ -30,3 +30,14 @@ export const createPVS = object().shape({
     .required("Passwords don't match"),
   agreeTC: bool().isTrue("please accept"),
 });
+
+export const contactVS = object().shape({
+  name: string()
+    .min(2, "too short")
+    .max(70, "too long")
+    .required("you need to specify"),
+  emailphone: string().max(50, "too long").required("you need to specify"),
+  message: string()
+    .max(500, "too long")
+    .required("you need to write a message"),
+});
