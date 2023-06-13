@@ -10,6 +10,8 @@ const queryClient = postgres({
   database: process.env.PGDATABASE || "ken",
 });
 
-const db = drizzle(queryClient);
+const db = drizzle(queryClient, {
+  logger: process.env.NODE_ENV === "development" ? true : undefined,
+});
 
 export { db };

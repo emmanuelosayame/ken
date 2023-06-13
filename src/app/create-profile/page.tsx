@@ -9,13 +9,14 @@ import {
   EyeIcon,
   EyeSlashIcon,
 } from "@heroicons/react/24/outline";
-import { createPVS } from "@lib/validation";
-import { Form, Formik } from "formik";
+import { CreateFormValues, createProfileVS } from "@lib/validation";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { RemoveScroll } from "react-remove-scroll";
 import useMutate from "swr/mutation";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
 
 const SuccessScreen = () => {
   const router = useRouter();
@@ -65,7 +66,18 @@ const NewUserPage = () => {
     }
   );
 
-  const createAccount = (values: typeof formIv) => {
+  const {
+    register,
+    handleSubmit,
+    getValues,
+    setValue,
+    formState: { errors, touchedFields },
+  } = useForm<CreateFormValues>({
+    defaultValues: { agreeTC: false },
+    resolver: zodResolver(createProfileVS),
+  });
+
+  const createAccount = (values: CreateFormValues) => {
     const { agreeTC, confirmPassword, ...rest } = values;
     if (!agreeTC) return;
     trigger(rest);
@@ -81,127 +93,110 @@ const NewUserPage = () => {
       </div>
       <h1 className='text-xl font-semibold'>Create Profile</h1>
 
-      <Formik
-        initialValues={formIv}
-        onSubmit={createAccount}
-        validationSchema={createPVS}
-        enableReinitialize>
-        {({
-          getFieldProps,
-          touched,
-          errors,
-          isValid,
-          values,
-          setFieldValue,
-        }) => (
-          <Form className='space-y-7 bg-white rounded-lg p-3 my-auto'>
-            <div className=' w-full space-y-2'>
-              <InputTemp
-                label='Name'
-                placeholder='John'
-                required
-                error={errors.fullName}
-                touched={touched.fullName}
-                {...getFieldProps("fullName")}
-              />
-              <InputTemp
-                label='Email'
-                required
-                type='email'
-                error={errors.email}
-                touched={touched.email}
-                placeholder='@mail.com'
-                {...getFieldProps("email")}
-              />
-              <InputTemp
-                label='Phone'
-                required
-                type='tel'
-                error={errors.phone}
-                touched={touched.phone}
-                placeholder='080...'
-                {...getFieldProps("phone")}
-              />
-              <InputTemp
-                label='Location'
-                type='text'
-                required
-                error={errors.location}
-                touched={touched.location}
-                placeholder='e.g. Uniben'
-                {...getFieldProps("location")}
-              />
-              <div className='relative'>
-                <InputTemp
-                  label='Password'
-                  required
-                  error={errors.password}
-                  touched={touched.password}
-                  // placeholder='e.g. Uniben'
-                  {...getFieldProps("password")}
-                  type={!vis.p ? "password" : "text"}
-                />
-                <button
-                  className='absolute right-2 top-7'
-                  type='button'
-                  onClick={() => setVis((x) => ({ cp: x.cp, p: !x.p }))}>
-                  {!vis.p ? (
-                    <EyeSlashIcon width={24} />
-                  ) : (
-                    <EyeIcon width={24} />
-                  )}
-                </button>
-              </div>
-              <div className='relative'>
-                <InputTemp
-                  label='Confirm Password'
-                  required
-                  error={errors.confirmPassword}
-                  touched={touched.confirmPassword}
-                  // placeholder='e.g. Uniben'
-                  {...getFieldProps("confirmPassword")}
-                  type={!vis.cp ? "password" : "text"}
-                  className='pr-10'
-                />
-                <button
-                  type='button'
-                  className='absolute right-2 top-7'
-                  onClick={() => setVis((x) => ({ p: x.p, cp: !x.cp }))}>
-                  {!vis.cp ? (
-                    <EyeSlashIcon width={24} />
-                  ) : (
-                    <EyeIcon width={24} />
-                  )}
-                </button>
-              </div>
-
-              <div className='flex gap-2 items-center'>
-                <Checkbox
-                  checked={values.agreeTC}
-                  handleChange={() => {
-                    setFieldValue("agreeTC", !values.agreeTC);
-                  }}
-                />
-                <p className='text-xs w-fit'>
-                  You are indicating that you have read and agree to the{" "}
-                  <Link href={"/legal"} className='text-blue-400'>
-                    Terms of Use and Privacy Policy.
-                  </Link>
-                </p>
-              </div>
-              {errors.agreeTC && (
-                <p className='text-xs text-center text-red-400'>
-                  You must agree to our privacy policies
-                </p>
-              )}
-            </div>
-
-            <button className='btn' type='submit' disabled={!isValid}>
-              Create Profile
+      <form
+        onSubmit={handleSubmit(createAccount)}
+        className='space-y-7 bg-white rounded-lg p-3 my-auto'>
+        <div className=' w-full space-y-2'>
+          <InputTemp
+            label='Name'
+            placeholder='John'
+            required
+            error={errors.fullName?.message?.toString()}
+            touched={touchedFields.fullName}
+            {...register("fullName")}
+          />
+          <InputTemp
+            label='Email'
+            required
+            type='email'
+            error={errors.email?.message?.toString()}
+            touched={touchedFields.email}
+            placeholder='@mail.com'
+            {...register("email")}
+          />
+          <InputTemp
+            label='Phone'
+            required
+            type='tel'
+            error={errors.phone?.message?.toString()}
+            touched={touchedFields.phone}
+            placeholder='080...'
+            {...register("phone")}
+          />
+          <InputTemp
+            label='Location'
+            type='text'
+            required
+            error={errors.location?.message?.toString()}
+            touched={touchedFields.location}
+            placeholder='e.g. Uniben'
+            {...register("location")}
+          />
+          <div className='relative'>
+            <InputTemp
+              label='Password'
+              required
+              error={errors.password?.message?.toString()}
+              touched={touchedFields.password}
+              placeholder='enter a strong password'
+              {...register("password")}
+              type={!vis.p ? "password" : "text"}
+            />
+            <button
+              className='absolute right-2 top-7'
+              type='button'
+              onClick={() => setVis((x) => ({ cp: x.cp, p: !x.p }))}>
+              {!vis.p ? <EyeSlashIcon width={24} /> : <EyeIcon width={24} />}
             </button>
-          </Form>
-        )}
-      </Formik>
+          </div>
+          <div className='relative'>
+            <InputTemp
+              label='Confirm Password'
+              required
+              error={errors.confirmPassword?.message?.toString()}
+              touched={touchedFields.confirmPassword}
+              placeholder='repeat password'
+              {...register("confirmPassword")}
+              type={!vis.cp ? "password" : "text"}
+              className='pr-10'
+            />
+            <button
+              type='button'
+              className='absolute right-2 top-7'
+              onClick={() => setVis((x) => ({ p: x.p, cp: !x.cp }))}>
+              {!vis.cp ? <EyeSlashIcon width={24} /> : <EyeIcon width={24} />}
+            </button>
+          </div>
+
+          <div className='flex gap-2 items-center'>
+            <Checkbox
+              checked={getValues("agreeTC")}
+              handleChange={() => {
+                setValue("agreeTC", !getValues("agreeTC"), {
+                  shouldValidate: true,
+                  shouldTouch: true,
+                  shouldDirty: true,
+                });
+              }}
+            />
+            <p className='text-xs w-fit'>
+              You are indicating that you have read and agree to the{" "}
+              <Link href={"/legal"} className='text-blue-400'>
+                Terms of Use and Privacy Policy.
+              </Link>
+            </p>
+          </div>
+          {touchedFields.agreeTC && errors.agreeTC && (
+            <p className='text-xs text-center text-red-400'>
+              You must agree to our privacy policies
+            </p>
+          )}
+        </div>
+
+        <button className='btn' type='submit'>
+          Create Profile
+        </button>
+      </form>
     </div>
   );
 };

@@ -1,9 +1,8 @@
 "use client";
 
-import { Form, Formik } from "formik";
 import Checkbox from "./Checkbox";
 import { InputTemp, InputTextarea } from "./InputTemp";
-import { checkoutVS } from "@lib/validation";
+import { profileVS, ProfileFormValues } from "@lib/validation";
 import { Customer } from "@/server/db/schema";
 import useSwr from "swr";
 import { client } from "@/server/client";
@@ -14,6 +13,9 @@ import { initialState } from "../../store/orderSlice";
 import useMutate from "swr/mutation";
 import { LoadingBlur } from "./Loading";
 import { useSession } from "@lib/hooks";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { z } from "zod";
 
 const CheckoutComp = ({ customer }: { customer?: Customer }) => {
   const session = useSession();
@@ -56,98 +58,113 @@ const CheckoutComp = ({ customer }: { customer?: Customer }) => {
   // const {} = useMutate("place-order",async()=>client.order.)
   const placeOrder = () => {};
 
+  const {
+    register,
+    handleSubmit,
+    getValues,
+    setValue,
+    formState: { errors, touchedFields },
+  } = useForm<
+    Omit<ProfileFormValues, "email"> & {
+      createAccount: boolean;
+      notes?: string;
+    }
+  >({
+    defaultValues: formIv,
+    resolver: zodResolver(
+      profileVS.omit({ email: true }).extend({
+        createAccount: z.boolean(),
+        notes: z.string().max(200, "too long").optional(),
+      })
+    ),
+  });
+
   return (
-    <Formik
-      initialValues={formIv}
-      onSubmit={placeOrder}
-      validationSchema={checkoutVS}
-      enableReinitialize>
-      {({ getFieldProps, touched, errors, isValid, values, setFieldValue }) => (
-        <Form className='space-y-4'>
-          {/* {isMutating && (
+    <form onSubmit={handleSubmit(placeOrder)} className='space-y-4'>
+      {/* {isMutating && (
             <p className='absolute top-20 left-20 text-red-500 z-50'>loading</p>
           )} */}
-          {/* <LoadingBlur /> */}
-          <div className='bg-white w-full rounded-lg p-3 space-y-2'>
-            {!session && (
-              <div className='flex gap-3'>
-                <Checkbox
-                  checked={values.createAccount}
-                  handleChange={() => {
-                    setFieldValue("createAccount", !values.createAccount);
-                  }}
-                />
+      {/* <LoadingBlur /> */}
+      <div className='bg-white w-full rounded-lg p-3 space-y-2'>
+        {!session && (
+          <div className='flex gap-3'>
+            <Checkbox
+              checked={getValues("createAccount")}
+              handleChange={() => {
+                setValue("createAccount", !getValues("createAccount"), {
+                  shouldDirty: true,
+                  shouldTouch: true,
+                  shouldValidate: true,
+                });
+              }}
+            />
 
-                <p>Also create a Profile for me</p>
-              </div>
-            )}
-            <h2 className='font-semibold'>Billing Details</h2>
-            {/* <button className='btn' onClick={() => trigger()}>
+            <p>Also create a Profile for me</p>
+          </div>
+        )}
+        <h2 className='font-semibold'>Billing Details</h2>
+        {/* <button className='btn' onClick={() => trigger()}>
               Click
             </button> */}
-            <InputTemp
-              label='Name'
-              placeholder='John'
-              required
-              error={errors.name}
-              touched={touched.name}
-              {...getFieldProps("name")}
-            />
-            <InputTemp
-              label='Phone'
-              required
-              error={errors.phone}
-              touched={touched.phone}
-              placeholder='080...'
-              {...getFieldProps("phone")}
-            />
-            <InputTemp
-              label='Location'
-              required
-              error={errors.location}
-              touched={touched.location}
-              placeholder='e.g. Uniben'
-              {...getFieldProps("location")}
-            />
-            <InputTextarea
-              label='Notes (optional)'
-              error={errors.notes}
-              touched={touched.notes}
-              {...getFieldProps("notes")}
-              placeholder='additional notes...'
-            />
-          </div>
+        <InputTemp
+          label='Name'
+          placeholder='John'
+          required
+          error={errors.fullName?.message?.toString()}
+          touched={touchedFields.fullName}
+          {...register("fullName")}
+        />
+        <InputTemp
+          label='Phone'
+          required
+          error={errors.phone?.message?.toString()}
+          touched={touchedFields.phone}
+          placeholder='080...'
+          {...register("phone")}
+        />
+        <InputTemp
+          label='Location'
+          required
+          error={errors.location?.message?.toString()}
+          touched={touchedFields.location}
+          placeholder='e.g. Uniben'
+          {...register("location")}
+        />
+        <InputTextarea
+          label='Notes (optional)'
+          error={errors.notes?.message?.toString()}
+          touched={touchedFields.notes}
+          {...register("notes")}
+          placeholder='additional notes...'
+        />
+      </div>
 
-          <div className='bg-white w-full rounded-lg overflow-hidden min-h-[150px] p-2 space-y-2 relative flex flex-col'>
-            {isLoading && <LoadingBlur />}
-            <div className=' w-full flex-1'>
-              <h2 className='font-semibold'>Order Review</h2>
-              <div className='flex flex-col p-2 gap-1'>
-                {checkoutData?.items?.map((item) => (
-                  <div
-                    className='border rounded-lg py-2 px-4 flex justify-between'
-                    key={item.id}>
-                    <h2>{item.title}</h2>
-                    <p>
-                      ₦{item.price} * <span>{item.quantity}</span>{" "}
-                    </p>
-                  </div>
-                ))}
+      <div className='bg-white w-full rounded-lg overflow-hidden min-h-[150px] p-2 space-y-2 relative flex flex-col'>
+        {isLoading && <LoadingBlur />}
+        <div className=' w-full flex-1'>
+          <h2 className='font-semibold'>Order Review</h2>
+          <div className='flex flex-col p-2 gap-1'>
+            {checkoutData?.items?.map((item) => (
+              <div
+                className='border rounded-lg py-2 px-4 flex justify-between'
+                key={item.id}>
+                <h2>{item.title}</h2>
+                <p>
+                  ₦{item.price} * <span>{item.quantity}</span>{" "}
+                </p>
               </div>
-            </div>
-            <h3 className='text-lg font-semibold'>
-              Total:{" "}
-              <span className='text-xl text-red-500'>
-                ₦ {checkoutData?.total}
-              </span>
-            </h3>
-            <button className='btn' type='submit' disabled={!isValid}>
-              Pay
-            </button>
+            ))}
           </div>
-        </Form>
-      )}
-    </Formik>
+        </div>
+        <h3 className='text-lg font-semibold'>
+          Total:{" "}
+          <span className='text-xl text-red-500'>₦ {checkoutData?.total}</span>
+        </h3>
+        <button className='btn' type='submit'>
+          Pay
+        </button>
+      </div>
+    </form>
   );
 };
 

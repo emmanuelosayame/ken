@@ -9,22 +9,22 @@ import { cookies } from "next/headers";
 
 const supabase = createRouteHandlerClient({ cookies });
 
-const CustomerS = z.object({
+export const customerCreateVS = z.object({
   fullName: z.string(),
   email: z.string(),
   phone: z.string(),
-  location: z.string(),
+  location: z.string().optional(),
   password: z.string(),
 });
 
-export type CustomerCreate = z.infer<typeof CustomerS>;
+export type CustomerCreate = z.infer<typeof customerCreateVS>;
 
 export const customerRouter = router({
   many: procedure.input(z.object({})).query(async ({ ctx }) => {
     return await ctx.db.select().from(customerS);
   }),
   create: procedure
-    .input(z.object({ data: CustomerS }))
+    .input(z.object({ data: customerCreateVS }))
     .mutation(async ({ ctx, input }) => {
       const { password, ...rest } = input.data;
 

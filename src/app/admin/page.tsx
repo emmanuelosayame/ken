@@ -1,9 +1,9 @@
 "use client";
 import { client } from "@/server/client";
-import { dateLocale, timeLocale } from "@lib/helpers";
+import { dateLocale, orderStatusColor, timeLocale } from "@lib/helpers";
 import useSwr from "swr";
 import useMutate from "swr/mutation";
-import { TableButton, orderStatusColor } from "./Client";
+import { TableButton } from "./Client";
 
 const AdminHome = () => {
   const {

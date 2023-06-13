@@ -4,33 +4,34 @@ import { db } from "@/server/drizzle";
 import { eq } from "drizzle-orm";
 import { cookies } from "next/headers";
 import { UserForm } from "./Client";
+import { redirect } from "next/navigation";
 
 const getData = async () => {
   const supabase = createServerComponentClient({ cookies });
-  try {
-    const { data } = await supabase.auth.getUser();
-    const userId = data.user?.id;
-    if (!userId) throw new Error("USER DOES NOT EXIST");
 
-    const [customer] = await db
-      .select()
-      .from(customerS)
-      .where(eq(customerS.id, userId));
-
-    if (!customer) throw new Error("USER DOES NOT EXIST");
-
-    return customer;
-  } catch (err) {
-    const error = err as any;
-    throw new Error(error);
+  const { data } = await supabase.auth.getUser();
+  const userId = data.user?.id;
+  if (!userId) {
+    // await supabase.auth.updateUser({})
+    redirect("/");
+    // throw new Error("USER DOES NOT EXIST");
   }
+
+  const [customer] = await db
+    .select()
+    .from(customerS)
+    .where(eq(customerS.id, userId));
+
+  if (!customer) {
+    // throw new Error("USER DOES NOT EXIST");
+    redirect("/");
+  }
+
+  return customer;
 };
 
 const MyProfilePage = async () => {
   const customer = await getData();
-  // const user = useSession();
-
-  // console.log(user?.user.id);
 
   return (
     <div className='w-full '>

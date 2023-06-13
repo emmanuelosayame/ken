@@ -12,6 +12,7 @@
   },
   "dependencies": {
     "@heroicons/react": "^2.0.18",
+    "@hookform/resolvers": "^3.1.1",
     "@radix-ui/react-avatar": "^1.0.3",
     "@radix-ui/react-collapsible": "^1.0.3",
     "@radix-ui/react-dialog": "^1.0.3",
@@ -29,7 +30,6 @@
     "drizzle-orm": "^0.26.5",
     "eslint": "8.41.0",
     "eslint-config-next": "13.4.3",
-    "formik": "^2.4.1",
     "immer": "^10.0.2",
     "lodash": "^4.17.21",
     "next": "13.4.4",
@@ -39,6 +39,7 @@
     "react": "18.2.0",
     "react-chartjs-2": "^5.2.0",
     "react-dom": "18.2.0",
+    "react-hook-form": "^7.44.3",
     "react-loader-spinner": "^5.3.4",
     "react-remove-scroll": "^2.5.6",
     "spinners-react": "^1.0.7",
@@ -46,7 +47,6 @@
     "tailwindcss": "3.3.2",
     "ts-node": "^10.9.1",
     "typescript": "5.0.4",
-    "yup": "^1.2.0",
     "zod": "^3.21.4",
     "zustand": "^4.3.8"
   },
