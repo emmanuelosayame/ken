@@ -13,6 +13,7 @@ import { useState } from "react";
 import { GoogleSvg } from "@lib/Svg";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
+import { getURL } from "@lib/helpers";
 
 const formIv = {
   email: "",
@@ -39,7 +40,7 @@ const LoginPage = () => {
   const loginGoogle = async () => {
     await supabase.auth.signInWithOAuth({
       provider: "google",
-      options: { redirectTo: "/menu" },
+      options: { redirectTo: getURL() },
     });
   };
 

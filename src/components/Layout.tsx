@@ -9,15 +9,15 @@ const Layout = ({ children }: { children: ReactNode }) => {
       {children}
       <Footer />
 
-      {/* <div
-        className='fixed bottom-0 left-0 flex h-36 w-full items-end justify-center bg-gradient-to-t
+      <div
+        className='fixed bottom-0 inset-x-0 flex h-44 w-full items-end justify-center bg-gradient-to-t 
        from-white via-white dark:from-black dark:via-black lg:static lg:h-auto lg:w-auto lg:bg-none'>
         <div className='w-full p-4 text-center'>
           <h1 className='font-medium text-sm'>
             Food by <span className='text-red-500'>delorand</span>
           </h1>
         </div>
-      </div> */}
+      </div>
     </main>
   );
 };

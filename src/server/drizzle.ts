@@ -11,7 +11,7 @@ const queryClient = postgres({
 });
 
 const db = drizzle(queryClient, {
-  logger: process.env.NODE_ENV === "development" ? true : undefined,
+  // logger: process.env.NODE_ENV === "development" ? true : undefined,
 });
 
 export { db };

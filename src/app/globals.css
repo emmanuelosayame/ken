@@ -1,3 +1,9 @@
+@media (prefers-color-scheme: light) {
+  html {
+    color-scheme: light only;
+  }
+}
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -9,10 +15,14 @@
 }
 
 @media (prefers-color-scheme: dark) {
-  :root {
-    --foreground-rgb: 255, 255, 255;
-    --background-start-rgb: 0, 0, 0;
-    --background-end-rgb: 0, 0, 0;
+  /* :root {
+      --foreground-rgb: 255, 255, 255;
+      --background-start-rgb: 0, 0, 0;
+      --background-end-rgb: 0, 0, 0;
+    } */
+
+  html {
+    color-scheme: light only;
   }
 }
 
@@ -53,10 +63,12 @@ body {
 
 @layer components {
   .btn-outline {
-    @apply text-sm border border-stone-500 text-stone-500 rounded-lg py-3 w-full hover:bg-stone-200 shadow-sm flex justify-center items-center;
+    @apply text-sm border border-stone-500 text-stone-500 rounded-lg py-3 w-full hover:bg-stone-200 shadow-sm flex justify-center 
+    items-center active:scale-90 transition-all;
   }
   .btn {
-    @apply text-sm bg-stone-500 text-white rounded-lg py-3 w-full hover:brightness-75 shadow-md flex justify-center items-center;
+    @apply text-sm bg-stone-500 text-white rounded-lg py-3 w-full hover:brightness-75 shadow-md flex justify-center items-center 
+    active:scale-90 transition-all;
   }
   .center-x {
     @apply left-1/2 -translate-x-1/2;

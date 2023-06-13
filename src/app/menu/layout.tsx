@@ -1,13 +1,17 @@
+"use client";
 import Layout from "@/components/Layout";
+import { LazyMotion } from "framer-motion";
 import { ReactNode } from "react";
 
-export const metadata = {
-  title: "Menu | Ken's Food",
-  description: "Shawarma and Babeque",
-};
+const domAnimation = () =>
+  import("../../components/domAnimation").then((res) => res.default);
 
 const PageLayout = ({ children }: { children: ReactNode }) => {
-  return <Layout>{children}</Layout>;
+  return (
+    <Layout>
+      <LazyMotion features={domAnimation}>{children}</LazyMotion>
+    </Layout>
+  );
 };
 
 export default PageLayout;

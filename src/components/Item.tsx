@@ -2,8 +2,7 @@
 import { useRouter } from "next/navigation";
 import { useStore } from "../../store/store";
 import { Item } from "@/server/db/schema";
-import { useInView, useAnimate } from "framer-motion";
-import { useEffect } from "react";
+import { m } from "framer-motion";
 
 const ItemComponent = ({ data }: { data: Item }) => {
   const router = useRouter();
@@ -21,37 +20,22 @@ const ItemComponent = ({ data }: { data: Item }) => {
     router.push("/checkout");
   };
 
-  const [ref, animate] = useAnimate();
-
-  const inView = useInView(ref, { amount: 0.3, once: false });
-
-  useEffect(() => {
-    if (inView) {
-      animate(ref.current, {
-        opacity: 1,
-        scale: 1,
-        ease: "backIn",
-        duration: 0.4,
-        type: "spring",
-        stiffness: 50,
-      });
-    } else {
-      animate(ref.current, {
-        scale: 0,
-      });
-    }
-  }, [animate, inView, ref]);
-
   return (
-    <div
-      ref={ref}
-      className='col-span-1 bg-white rounded-lg p-3 flex flex-col gap-4'>
-      <div className='flex-1 flex gap-2 dark:text-black'>
-        <div className='h-40 w-full bg-black rounded-xl' />
-        <div className='space-y-2 text-end w-full'>
+    <m.div
+      initial={{ opacity: 0.4, y: 40, scale: 0.9 }}
+      whileInView={{ opacity: 1, y: 0, scale: 1 }}
+      // viewport={{ amount: 0.5 }}
+      transition={{
+        ease: "easeOut",
+        delay: 0.2,
+      }}
+      className='col-span-1 bg-white rounded-lg p-3 flex flex-col gap-4 h-96'>
+      <div className='flex-1 flex gap-2 dark:text-black relative'>
+        <div className=' w-full bg-black/80 rounded-xl' />
+        <div className='absolute top-5 right-4 space-y-2 text-end text-white w-1/2'>
           <p className='text-2xl font-medium'>₦{data?.price}</p>
-          <h3 className='text-xl text-stone-800 font-medium'>{data?.title}</h3>
-          <p className='text-[15px] text-center'>{data?.description}</p>
+          <h3 className='text-lg text-stone-100 font-medium'>{data?.title}</h3>
+          <p className='text-sm'>{data?.description}</p>
         </div>
       </div>
       <div className='flex gap-2 w-full'>
@@ -64,7 +48,7 @@ const ItemComponent = ({ data }: { data: Item }) => {
           Order Now
         </button>
       </div>
-    </div>
+    </m.div>
   );
 };
 

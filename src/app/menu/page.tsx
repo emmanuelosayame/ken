@@ -3,6 +3,11 @@ import { itemS } from "@/server/db/schema";
 import { db } from "@/server/drizzle";
 import { eq, ne } from "drizzle-orm";
 
+export const metadata = {
+  title: "Menu | Ken's Food",
+  description: "Shawarma and Babeque",
+};
+
 const getData = async () => {
   try {
     const items = await db.select().from(itemS).where(ne(itemS.tag, "drink"));
