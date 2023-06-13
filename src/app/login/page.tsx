@@ -8,7 +8,6 @@ import {
   EyeSlashIcon,
 } from "@heroicons/react/24/outline";
 import { loginVS, LoginFormValues } from "@lib/validation";
-import { AuthError } from "@supabase/supabase-js";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { GoogleSvg } from "@lib/Svg";
@@ -23,7 +22,7 @@ const formIv = {
 const LoginPage = () => {
   const router = useRouter();
   const [vis, setVis] = useState(false);
-  const [error, setError] = useState<AuthError | null>(null);
+  const [error, setError] = useState<any | null>(null);
 
   const login = async ({ email, password }: LoginFormValues) => {
     const { error } = await supabase.auth.signInWithPassword({

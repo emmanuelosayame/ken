@@ -5,7 +5,7 @@ import { Bars3Icon, XMarkIcon } from "@heroicons/react/20/solid";
 import { RemoveScroll } from "react-remove-scroll";
 import { useRouter } from "next/navigation";
 import { useSession } from "@lib/hooks";
-import { Session } from "@supabase/supabase-js";
+import { Session } from "@supabase/auth-helpers-nextjs";
 import Avatar from "./radix/Avatar";
 
 const Header = () => {

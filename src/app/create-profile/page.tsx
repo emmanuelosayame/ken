@@ -38,15 +38,15 @@ const SuccessScreen = () => {
   );
 };
 
-const formIv = {
-  fullName: "",
-  location: "",
-  phone: "",
-  email: "",
-  password: "",
-  confirmPassword: "",
-  agreeTC: false,
-};
+// const formIv = {
+//   fullName: "",
+//   location: "",
+//   phone: "",
+//   email: "",
+//   password: "",
+//   confirmPassword: "",
+//   agreeTC: false,
+// };
 
 const NewUserPage = () => {
   const router = useRouter();

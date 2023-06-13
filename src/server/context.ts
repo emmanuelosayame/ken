@@ -1,6 +1,6 @@
 import { type inferAsyncReturnType } from "@trpc/server";
 import { db } from "./drizzle";
-import { Session } from "@supabase/supabase-js";
+import { Session } from "@supabase/auth-helpers-nextjs";
 
 export const createContext = async (opts: {
   req: Request;

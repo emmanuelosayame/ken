@@ -83,7 +83,7 @@ const CartComponent = ({
     <Portal>
       <Overlay className='fixed inset-0 z-40 bg-black/50 backdrop-blur-sm' />
       <Content
-        className={`overflow-hidden w-full z-50 p-4 fixed center-x top-28 dark:text-black flex flex-col ${
+        className={`overflow-hidden w-full z-50 p-4 fixed center-x top-20 dark:text-black flex flex-col ${
           !metadata && error ? "" : ""
         }`}>
         {isLoading ? (
@@ -105,8 +105,8 @@ const CartComponent = ({
               </div>
             ) : (
               <>
-                <div className='bg-white rounded-xl p-4 shadow-md'>
-                  <div className='flex gap-5'>
+                <div className='bg-white rounded-xl shadow-md py-3'>
+                  <div className='flex gap-5 px-4'>
                     <h2 className='text-lg font-semibold'>Cart</h2>
                     <button
                       className='text-red-400'
@@ -124,14 +124,16 @@ const CartComponent = ({
                       <TrashIcon width={23} />
                     </button>
                   </div>
-                  <div className='border-b border-b-gray-300 w-full my-1' />
+                  <div className='border-b border-b-gray-300 my-1 mx-3' />
 
-                  <div className='flex flex-col gap-3 pt-2 min-h-[80px] max-h-[500px] overflow-auto'>
+                  <div className='flex flex-col gap-3 pt-2 min-h-[80px] max-h-[500px] overflow-auto p-4'>
                     {cart.map((cartItem, index) => {
                       const checked = getChecked(cartItem.id);
 
                       return (
-                        <div key={index} className='flex gap-3 items-center'>
+                        <div
+                          key={index}
+                          className='flex gap-3 items-center border-b last:border-none'>
                           <Checkbox
                             checked={checked}
                             handleChange={() => {

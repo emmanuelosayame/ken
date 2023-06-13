@@ -1,7 +1,7 @@
 "use client";
 
 import { supabase } from "@lib/supabase";
-import { Session } from "@supabase/supabase-js";
+import { Session } from "@supabase/auth-helpers-nextjs";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 

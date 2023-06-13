@@ -1,19 +1,9 @@
 import { z } from "zod";
 
-// export const checkoutVS = object().shape({
-//   name: string()
-//     .min(2, "too short")
-//     .max(100, "too long")
-//     .required("you need to specify"),
-//   phone: string().max(13, "too long").required("you need to specify"),
-//   location: string().max(100, "too long").required("you need to specify"),
-//   notes: string().max(200, "too long"),
-// });
-
 const createVS = z.object({
   fullName: z.string().min(2, "too short").max(100, "too long"),
-  email: z.string().email("invalid email"),
-  phone: z.string().max(13, "invalid phone"),
+  email: z.string().min(1, "required").email("invalid email"),
+  phone: z.string().min(1, "required").max(13, "invalid phone"),
   location: z.string().max(100, "too long").optional(),
   password: z.string().min(8, "too short").max(100, "oops"),
   confirmPassword: z.string().min(8, "too short").max(100, "oops"),

@@ -4,7 +4,6 @@ import { Dispatch, SetStateAction, useState } from "react";
 import {
   Bars3Icon,
   ShoppingCartIcon,
-  UserCircleIcon,
   XMarkIcon,
 } from "@heroicons/react/20/solid";
 import { RemoveScroll } from "react-remove-scroll";
@@ -13,12 +12,9 @@ import { Root, Trigger } from "@radix-ui/react-dialog";
 import { useStore } from "../../store/store";
 import { useSSR } from "@lib/hooks";
 import dynamic from "next/dynamic";
-import useMutate from "swr/mutation";
-import { client } from "@/server/client";
-import { LoadingBlur } from "./Loading";
 import { supabase } from "@lib/supabase";
 import { useSession } from "@lib/hooks";
-import { Session } from "@supabase/supabase-js";
+import { Session } from "@supabase/auth-helpers-nextjs";
 import Avatar from "./radix/Avatar";
 
 const CartComponent = dynamic(() => import("./CartComponent"));
@@ -64,7 +60,7 @@ const Header = () => {
           </Root>
           <button
             onClick={() =>
-              !session ? router.push("/login") : router.push("/account")
+              !session ? router.push("/login") : router.push("/my-profile")
             }>
             <Avatar className='w-8 h-8 rounded-full' fallback={user?.email} />
           </button>
@@ -93,7 +89,7 @@ const MobileMenu = ({
 
       {open && (
         <RemoveScroll
-          className='fixed z-50 inset-0 p-4 w-full h-full bg-white/50
+          className='fixed z-50 inset-0 p-4 w-full h-full bg-white/50 transition-all
          dark:bg-black/80 backdrop-blur-lg '>
           <button onClick={() => setOpen((s) => !s)}>
             <XMarkIcon width={28} stroke='black' />
